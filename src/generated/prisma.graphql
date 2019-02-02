@@ -1,5 +1,13 @@
 # source: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
-# timestamp: Sat Feb 02 2019 16:18:12 GMT+0100 (Central European Standard Time)
+# timestamp: Sat Feb 02 2019 17:53:30 GMT+0100 (Central European Standard Time)
+
+type AggregateCustomer {
+  count: Int!
+}
+
+type AggregateMerchantAccount {
+  count: Int!
+}
 
 type AggregateUser {
   count: Int!
@@ -10,19 +18,545 @@ type BatchPayload {
   count: Long!
 }
 
+type Customer implements Node {
+  id: ID!
+  stripeId: String!
+  email: String!
+}
+
+"""A connection to a list of items."""
+type CustomerConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [CustomerEdge]!
+  aggregate: AggregateCustomer!
+}
+
+input CustomerCreateInput {
+  stripeId: String!
+  email: String!
+}
+
+input CustomerCreateOneInput {
+  create: CustomerCreateInput
+  connect: CustomerWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type CustomerEdge {
+  """The item at the end of the edge."""
+  node: Customer!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum CustomerOrderByInput {
+  id_ASC
+  id_DESC
+  stripeId_ASC
+  stripeId_DESC
+  email_ASC
+  email_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type CustomerPreviousValues {
+  id: ID!
+  stripeId: String!
+  email: String!
+}
+
+type CustomerSubscriptionPayload {
+  mutation: MutationType!
+  node: Customer
+  updatedFields: [String!]
+  previousValues: CustomerPreviousValues
+}
+
+input CustomerSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CustomerSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CustomerSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CustomerSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: CustomerWhereInput
+}
+
+input CustomerUpdateDataInput {
+  stripeId: String
+  email: String
+}
+
+input CustomerUpdateInput {
+  stripeId: String
+  email: String
+}
+
+input CustomerUpdateManyMutationInput {
+  stripeId: String
+  email: String
+}
+
+input CustomerUpdateOneRequiredInput {
+  create: CustomerCreateInput
+  connect: CustomerWhereUniqueInput
+  update: CustomerUpdateDataInput
+  upsert: CustomerUpsertNestedInput
+}
+
+input CustomerUpsertNestedInput {
+  update: CustomerUpdateDataInput!
+  create: CustomerCreateInput!
+}
+
+input CustomerWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CustomerWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CustomerWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CustomerWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  stripeId: String
+
+  """All values that are not equal to given value."""
+  stripeId_not: String
+
+  """All values that are contained in given list."""
+  stripeId_in: [String!]
+
+  """All values that are not contained in given list."""
+  stripeId_not_in: [String!]
+
+  """All values less than the given value."""
+  stripeId_lt: String
+
+  """All values less than or equal the given value."""
+  stripeId_lte: String
+
+  """All values greater than the given value."""
+  stripeId_gt: String
+
+  """All values greater than or equal the given value."""
+  stripeId_gte: String
+
+  """All values containing the given string."""
+  stripeId_contains: String
+
+  """All values not containing the given string."""
+  stripeId_not_contains: String
+
+  """All values starting with the given string."""
+  stripeId_starts_with: String
+
+  """All values not starting with the given string."""
+  stripeId_not_starts_with: String
+
+  """All values ending with the given string."""
+  stripeId_ends_with: String
+
+  """All values not ending with the given string."""
+  stripeId_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+}
+
+input CustomerWhereUniqueInput {
+  id: ID
+  stripeId: String
+  email: String
+}
+
 """
 The `Long` scalar type represents non-fractional signed whole numeric values.
 Long can represent values between -(2^63) and 2^63 - 1.
 """
 scalar Long
 
+type MerchantAccount implements Node {
+  id: ID!
+  stripeAccountId: String!
+  email: String!
+}
+
+"""A connection to a list of items."""
+type MerchantAccountConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [MerchantAccountEdge]!
+  aggregate: AggregateMerchantAccount!
+}
+
+input MerchantAccountCreateInput {
+  stripeAccountId: String!
+  email: String!
+}
+
+input MerchantAccountCreateOneInput {
+  create: MerchantAccountCreateInput
+  connect: MerchantAccountWhereUniqueInput
+}
+
+"""An edge in a connection."""
+type MerchantAccountEdge {
+  """The item at the end of the edge."""
+  node: MerchantAccount!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum MerchantAccountOrderByInput {
+  id_ASC
+  id_DESC
+  stripeAccountId_ASC
+  stripeAccountId_DESC
+  email_ASC
+  email_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type MerchantAccountPreviousValues {
+  id: ID!
+  stripeAccountId: String!
+  email: String!
+}
+
+type MerchantAccountSubscriptionPayload {
+  mutation: MutationType!
+  node: MerchantAccount
+  updatedFields: [String!]
+  previousValues: MerchantAccountPreviousValues
+}
+
+input MerchantAccountSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MerchantAccountSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MerchantAccountSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MerchantAccountSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: MerchantAccountWhereInput
+}
+
+input MerchantAccountUpdateDataInput {
+  stripeAccountId: String
+  email: String
+}
+
+input MerchantAccountUpdateInput {
+  stripeAccountId: String
+  email: String
+}
+
+input MerchantAccountUpdateManyMutationInput {
+  stripeAccountId: String
+  email: String
+}
+
+input MerchantAccountUpdateOneRequiredInput {
+  create: MerchantAccountCreateInput
+  connect: MerchantAccountWhereUniqueInput
+  update: MerchantAccountUpdateDataInput
+  upsert: MerchantAccountUpsertNestedInput
+}
+
+input MerchantAccountUpsertNestedInput {
+  update: MerchantAccountUpdateDataInput!
+  create: MerchantAccountCreateInput!
+}
+
+input MerchantAccountWhereInput {
+  """Logical AND on all given filters."""
+  AND: [MerchantAccountWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [MerchantAccountWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [MerchantAccountWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  stripeAccountId: String
+
+  """All values that are not equal to given value."""
+  stripeAccountId_not: String
+
+  """All values that are contained in given list."""
+  stripeAccountId_in: [String!]
+
+  """All values that are not contained in given list."""
+  stripeAccountId_not_in: [String!]
+
+  """All values less than the given value."""
+  stripeAccountId_lt: String
+
+  """All values less than or equal the given value."""
+  stripeAccountId_lte: String
+
+  """All values greater than the given value."""
+  stripeAccountId_gt: String
+
+  """All values greater than or equal the given value."""
+  stripeAccountId_gte: String
+
+  """All values containing the given string."""
+  stripeAccountId_contains: String
+
+  """All values not containing the given string."""
+  stripeAccountId_not_contains: String
+
+  """All values starting with the given string."""
+  stripeAccountId_starts_with: String
+
+  """All values not starting with the given string."""
+  stripeAccountId_not_starts_with: String
+
+  """All values ending with the given string."""
+  stripeAccountId_ends_with: String
+
+  """All values not ending with the given string."""
+  stripeAccountId_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+}
+
+input MerchantAccountWhereUniqueInput {
+  id: ID
+  stripeAccountId: String
+  email: String
+}
+
 type Mutation {
   createUser(data: UserCreateInput!): User!
+  createMerchantAccount(data: MerchantAccountCreateInput!): MerchantAccount!
+  createCustomer(data: CustomerCreateInput!): Customer!
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateMerchantAccount(data: MerchantAccountUpdateInput!, where: MerchantAccountWhereUniqueInput!): MerchantAccount
+  updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer
   deleteUser(where: UserWhereUniqueInput!): User
+  deleteMerchantAccount(where: MerchantAccountWhereUniqueInput!): MerchantAccount
+  deleteCustomer(where: CustomerWhereUniqueInput!): Customer
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertMerchantAccount(where: MerchantAccountWhereUniqueInput!, create: MerchantAccountCreateInput!, update: MerchantAccountUpdateInput!): MerchantAccount!
+  upsertCustomer(where: CustomerWhereUniqueInput!, create: CustomerCreateInput!, update: CustomerUpdateInput!): Customer!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyMerchantAccounts(data: MerchantAccountUpdateManyMutationInput!, where: MerchantAccountWhereInput): BatchPayload!
+  updateManyCustomers(data: CustomerUpdateManyMutationInput!, where: CustomerWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyMerchantAccounts(where: MerchantAccountWhereInput): BatchPayload!
+  deleteManyCustomers(where: CustomerWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -54,8 +588,14 @@ type PageInfo {
 
 type Query {
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  merchantAccounts(where: MerchantAccountWhereInput, orderBy: MerchantAccountOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [MerchantAccount]!
+  customers(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Customer]!
   user(where: UserWhereUniqueInput!): User
+  merchantAccount(where: MerchantAccountWhereUniqueInput!): MerchantAccount
+  customer(where: CustomerWhereUniqueInput!): Customer
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  merchantAccountsConnection(where: MerchantAccountWhereInput, orderBy: MerchantAccountOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MerchantAccountConnection!
+  customersConnection(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CustomerConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -66,11 +606,16 @@ type Query {
 
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+  merchantAccount(where: MerchantAccountSubscriptionWhereInput): MerchantAccountSubscriptionPayload
+  customer(where: CustomerSubscriptionWhereInput): CustomerSubscriptionPayload
 }
 
 type User implements Node {
   id: ID!
   name: String!
+  email: String!
+  customer: Customer!
+  account: MerchantAccount!
 }
 
 """A connection to a list of items."""
@@ -85,6 +630,9 @@ type UserConnection {
 
 input UserCreateInput {
   name: String!
+  email: String!
+  customer: CustomerCreateOneInput!
+  account: MerchantAccountCreateOneInput!
 }
 
 """An edge in a connection."""
@@ -101,6 +649,8 @@ enum UserOrderByInput {
   id_DESC
   name_ASC
   name_DESC
+  email_ASC
+  email_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -110,6 +660,7 @@ enum UserOrderByInput {
 type UserPreviousValues {
   id: ID!
   name: String!
+  email: String!
 }
 
 type UserSubscriptionPayload {
@@ -153,10 +704,14 @@ input UserSubscriptionWhereInput {
 
 input UserUpdateInput {
   name: String
+  email: String
+  customer: CustomerUpdateOneRequiredInput
+  account: MerchantAccountUpdateOneRequiredInput
 }
 
 input UserUpdateManyMutationInput {
   name: String
+  email: String
 }
 
 input UserWhereInput {
@@ -248,8 +803,51 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   name_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
+  customer: CustomerWhereInput
+  account: MerchantAccountWhereInput
 }
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }

@@ -1,4 +1,19 @@
 type User {
   id: ID! @unique
   name: String!
+  email: String! @unique
+  customer: Customer!
+  account: MerchantAccount!
+}
+
+type Customer {
+  id: ID! @unique
+  stripeId: String! @unique
+  email: String! @unique
+}
+
+type MerchantAccount {
+  id: ID! @unique
+  stripeAccountId: String! @unique
+  email: String! @unique
 }
