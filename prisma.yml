@@ -1,0 +1,2 @@
+endpoint: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
+datamodel: datamodel.prisma
