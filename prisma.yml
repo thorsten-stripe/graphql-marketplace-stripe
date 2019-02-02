@@ -1,5 +1,6 @@
-endpoint: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
+endpoint: ${env:PRISMA_ENDPOINT}
 datamodel: datamodel.prisma
+secret: ${env:PRISMA_SECRET}
 
 hooks:
   post-deploy:
