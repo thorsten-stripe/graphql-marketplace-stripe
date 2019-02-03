@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
-# timestamp: Sat Feb 02 2019 17:53:30 GMT+0100 (Central European Standard Time)
+# timestamp: Sun Feb 03 2019 12:46:43 GMT+0100 (Central European Standard Time)
 
 type AggregateCustomer {
   count: Int!
@@ -20,8 +20,8 @@ type BatchPayload {
 
 type Customer implements Node {
   id: ID!
-  stripeId: String!
-  email: String!
+  stripe_id: String!
+  has_open_disputes: Boolean!
 }
 
 """A connection to a list of items."""
@@ -35,8 +35,8 @@ type CustomerConnection {
 }
 
 input CustomerCreateInput {
-  stripeId: String!
-  email: String!
+  stripe_id: String!
+  has_open_disputes: Boolean
 }
 
 input CustomerCreateOneInput {
@@ -56,10 +56,10 @@ type CustomerEdge {
 enum CustomerOrderByInput {
   id_ASC
   id_DESC
-  stripeId_ASC
-  stripeId_DESC
-  email_ASC
-  email_DESC
+  stripe_id_ASC
+  stripe_id_DESC
+  has_open_disputes_ASC
+  has_open_disputes_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -68,8 +68,8 @@ enum CustomerOrderByInput {
 
 type CustomerPreviousValues {
   id: ID!
-  stripeId: String!
-  email: String!
+  stripe_id: String!
+  has_open_disputes: Boolean!
 }
 
 type CustomerSubscriptionPayload {
@@ -112,18 +112,18 @@ input CustomerSubscriptionWhereInput {
 }
 
 input CustomerUpdateDataInput {
-  stripeId: String
-  email: String
+  stripe_id: String
+  has_open_disputes: Boolean
 }
 
 input CustomerUpdateInput {
-  stripeId: String
-  email: String
+  stripe_id: String
+  has_open_disputes: Boolean
 }
 
 input CustomerUpdateManyMutationInput {
-  stripeId: String
-  email: String
+  stripe_id: String
+  has_open_disputes: Boolean
 }
 
 input CustomerUpdateOneRequiredInput {
@@ -187,92 +187,55 @@ input CustomerWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  stripeId: String
+  stripe_id: String
 
   """All values that are not equal to given value."""
-  stripeId_not: String
+  stripe_id_not: String
 
   """All values that are contained in given list."""
-  stripeId_in: [String!]
+  stripe_id_in: [String!]
 
   """All values that are not contained in given list."""
-  stripeId_not_in: [String!]
+  stripe_id_not_in: [String!]
 
   """All values less than the given value."""
-  stripeId_lt: String
+  stripe_id_lt: String
 
   """All values less than or equal the given value."""
-  stripeId_lte: String
+  stripe_id_lte: String
 
   """All values greater than the given value."""
-  stripeId_gt: String
+  stripe_id_gt: String
 
   """All values greater than or equal the given value."""
-  stripeId_gte: String
+  stripe_id_gte: String
 
   """All values containing the given string."""
-  stripeId_contains: String
+  stripe_id_contains: String
 
   """All values not containing the given string."""
-  stripeId_not_contains: String
+  stripe_id_not_contains: String
 
   """All values starting with the given string."""
-  stripeId_starts_with: String
+  stripe_id_starts_with: String
 
   """All values not starting with the given string."""
-  stripeId_not_starts_with: String
+  stripe_id_not_starts_with: String
 
   """All values ending with the given string."""
-  stripeId_ends_with: String
+  stripe_id_ends_with: String
 
   """All values not ending with the given string."""
-  stripeId_not_ends_with: String
-  email: String
+  stripe_id_not_ends_with: String
+  has_open_disputes: Boolean
 
   """All values that are not equal to given value."""
-  email_not: String
-
-  """All values that are contained in given list."""
-  email_in: [String!]
-
-  """All values that are not contained in given list."""
-  email_not_in: [String!]
-
-  """All values less than the given value."""
-  email_lt: String
-
-  """All values less than or equal the given value."""
-  email_lte: String
-
-  """All values greater than the given value."""
-  email_gt: String
-
-  """All values greater than or equal the given value."""
-  email_gte: String
-
-  """All values containing the given string."""
-  email_contains: String
-
-  """All values not containing the given string."""
-  email_not_contains: String
-
-  """All values starting with the given string."""
-  email_starts_with: String
-
-  """All values not starting with the given string."""
-  email_not_starts_with: String
-
-  """All values ending with the given string."""
-  email_ends_with: String
-
-  """All values not ending with the given string."""
-  email_not_ends_with: String
+  has_open_disputes_not: Boolean
 }
 
 input CustomerWhereUniqueInput {
   id: ID
-  stripeId: String
-  email: String
+  stripe_id: String
 }
 
 """
@@ -283,8 +246,13 @@ scalar Long
 
 type MerchantAccount implements Node {
   id: ID!
-  stripeAccountId: String!
-  email: String!
+  stripe_id: String!
+  business_name: String
+  charges_enabled: Boolean
+  payouts_enabled: Boolean
+  country: String!
+  default_currency: String!
+  verification_status: MerchantVerificationStatus!
 }
 
 """A connection to a list of items."""
@@ -298,8 +266,13 @@ type MerchantAccountConnection {
 }
 
 input MerchantAccountCreateInput {
-  stripeAccountId: String!
-  email: String!
+  stripe_id: String!
+  business_name: String
+  charges_enabled: Boolean
+  payouts_enabled: Boolean
+  country: String!
+  default_currency: String!
+  verification_status: MerchantVerificationStatus!
 }
 
 input MerchantAccountCreateOneInput {
@@ -319,10 +292,20 @@ type MerchantAccountEdge {
 enum MerchantAccountOrderByInput {
   id_ASC
   id_DESC
-  stripeAccountId_ASC
-  stripeAccountId_DESC
-  email_ASC
-  email_DESC
+  stripe_id_ASC
+  stripe_id_DESC
+  business_name_ASC
+  business_name_DESC
+  charges_enabled_ASC
+  charges_enabled_DESC
+  payouts_enabled_ASC
+  payouts_enabled_DESC
+  country_ASC
+  country_DESC
+  default_currency_ASC
+  default_currency_DESC
+  verification_status_ASC
+  verification_status_DESC
   updatedAt_ASC
   updatedAt_DESC
   createdAt_ASC
@@ -331,8 +314,13 @@ enum MerchantAccountOrderByInput {
 
 type MerchantAccountPreviousValues {
   id: ID!
-  stripeAccountId: String!
-  email: String!
+  stripe_id: String!
+  business_name: String
+  charges_enabled: Boolean
+  payouts_enabled: Boolean
+  country: String!
+  default_currency: String!
+  verification_status: MerchantVerificationStatus!
 }
 
 type MerchantAccountSubscriptionPayload {
@@ -375,23 +363,40 @@ input MerchantAccountSubscriptionWhereInput {
 }
 
 input MerchantAccountUpdateDataInput {
-  stripeAccountId: String
-  email: String
+  stripe_id: String
+  business_name: String
+  charges_enabled: Boolean
+  payouts_enabled: Boolean
+  country: String
+  default_currency: String
+  verification_status: MerchantVerificationStatus
 }
 
 input MerchantAccountUpdateInput {
-  stripeAccountId: String
-  email: String
+  stripe_id: String
+  business_name: String
+  charges_enabled: Boolean
+  payouts_enabled: Boolean
+  country: String
+  default_currency: String
+  verification_status: MerchantVerificationStatus
 }
 
 input MerchantAccountUpdateManyMutationInput {
-  stripeAccountId: String
-  email: String
+  stripe_id: String
+  business_name: String
+  charges_enabled: Boolean
+  payouts_enabled: Boolean
+  country: String
+  default_currency: String
+  verification_status: MerchantVerificationStatus
 }
 
-input MerchantAccountUpdateOneRequiredInput {
+input MerchantAccountUpdateOneInput {
   create: MerchantAccountCreateInput
   connect: MerchantAccountWhereUniqueInput
+  disconnect: Boolean
+  delete: Boolean
   update: MerchantAccountUpdateDataInput
   upsert: MerchantAccountUpsertNestedInput
 }
@@ -450,92 +455,195 @@ input MerchantAccountWhereInput {
 
   """All values not ending with the given string."""
   id_not_ends_with: ID
-  stripeAccountId: String
+  stripe_id: String
 
   """All values that are not equal to given value."""
-  stripeAccountId_not: String
+  stripe_id_not: String
 
   """All values that are contained in given list."""
-  stripeAccountId_in: [String!]
+  stripe_id_in: [String!]
 
   """All values that are not contained in given list."""
-  stripeAccountId_not_in: [String!]
+  stripe_id_not_in: [String!]
 
   """All values less than the given value."""
-  stripeAccountId_lt: String
+  stripe_id_lt: String
 
   """All values less than or equal the given value."""
-  stripeAccountId_lte: String
+  stripe_id_lte: String
 
   """All values greater than the given value."""
-  stripeAccountId_gt: String
+  stripe_id_gt: String
 
   """All values greater than or equal the given value."""
-  stripeAccountId_gte: String
+  stripe_id_gte: String
 
   """All values containing the given string."""
-  stripeAccountId_contains: String
+  stripe_id_contains: String
 
   """All values not containing the given string."""
-  stripeAccountId_not_contains: String
+  stripe_id_not_contains: String
 
   """All values starting with the given string."""
-  stripeAccountId_starts_with: String
+  stripe_id_starts_with: String
 
   """All values not starting with the given string."""
-  stripeAccountId_not_starts_with: String
+  stripe_id_not_starts_with: String
 
   """All values ending with the given string."""
-  stripeAccountId_ends_with: String
+  stripe_id_ends_with: String
 
   """All values not ending with the given string."""
-  stripeAccountId_not_ends_with: String
-  email: String
+  stripe_id_not_ends_with: String
+  business_name: String
 
   """All values that are not equal to given value."""
-  email_not: String
+  business_name_not: String
 
   """All values that are contained in given list."""
-  email_in: [String!]
+  business_name_in: [String!]
 
   """All values that are not contained in given list."""
-  email_not_in: [String!]
+  business_name_not_in: [String!]
 
   """All values less than the given value."""
-  email_lt: String
+  business_name_lt: String
 
   """All values less than or equal the given value."""
-  email_lte: String
+  business_name_lte: String
 
   """All values greater than the given value."""
-  email_gt: String
+  business_name_gt: String
 
   """All values greater than or equal the given value."""
-  email_gte: String
+  business_name_gte: String
 
   """All values containing the given string."""
-  email_contains: String
+  business_name_contains: String
 
   """All values not containing the given string."""
-  email_not_contains: String
+  business_name_not_contains: String
 
   """All values starting with the given string."""
-  email_starts_with: String
+  business_name_starts_with: String
 
   """All values not starting with the given string."""
-  email_not_starts_with: String
+  business_name_not_starts_with: String
 
   """All values ending with the given string."""
-  email_ends_with: String
+  business_name_ends_with: String
 
   """All values not ending with the given string."""
-  email_not_ends_with: String
+  business_name_not_ends_with: String
+  charges_enabled: Boolean
+
+  """All values that are not equal to given value."""
+  charges_enabled_not: Boolean
+  payouts_enabled: Boolean
+
+  """All values that are not equal to given value."""
+  payouts_enabled_not: Boolean
+  country: String
+
+  """All values that are not equal to given value."""
+  country_not: String
+
+  """All values that are contained in given list."""
+  country_in: [String!]
+
+  """All values that are not contained in given list."""
+  country_not_in: [String!]
+
+  """All values less than the given value."""
+  country_lt: String
+
+  """All values less than or equal the given value."""
+  country_lte: String
+
+  """All values greater than the given value."""
+  country_gt: String
+
+  """All values greater than or equal the given value."""
+  country_gte: String
+
+  """All values containing the given string."""
+  country_contains: String
+
+  """All values not containing the given string."""
+  country_not_contains: String
+
+  """All values starting with the given string."""
+  country_starts_with: String
+
+  """All values not starting with the given string."""
+  country_not_starts_with: String
+
+  """All values ending with the given string."""
+  country_ends_with: String
+
+  """All values not ending with the given string."""
+  country_not_ends_with: String
+  default_currency: String
+
+  """All values that are not equal to given value."""
+  default_currency_not: String
+
+  """All values that are contained in given list."""
+  default_currency_in: [String!]
+
+  """All values that are not contained in given list."""
+  default_currency_not_in: [String!]
+
+  """All values less than the given value."""
+  default_currency_lt: String
+
+  """All values less than or equal the given value."""
+  default_currency_lte: String
+
+  """All values greater than the given value."""
+  default_currency_gt: String
+
+  """All values greater than or equal the given value."""
+  default_currency_gte: String
+
+  """All values containing the given string."""
+  default_currency_contains: String
+
+  """All values not containing the given string."""
+  default_currency_not_contains: String
+
+  """All values starting with the given string."""
+  default_currency_starts_with: String
+
+  """All values not starting with the given string."""
+  default_currency_not_starts_with: String
+
+  """All values ending with the given string."""
+  default_currency_ends_with: String
+
+  """All values not ending with the given string."""
+  default_currency_not_ends_with: String
+  verification_status: MerchantVerificationStatus
+
+  """All values that are not equal to given value."""
+  verification_status_not: MerchantVerificationStatus
+
+  """All values that are contained in given list."""
+  verification_status_in: [MerchantVerificationStatus!]
+
+  """All values that are not contained in given list."""
+  verification_status_not_in: [MerchantVerificationStatus!]
 }
 
 input MerchantAccountWhereUniqueInput {
   id: ID
-  stripeAccountId: String
-  email: String
+  stripe_id: String
+}
+
+enum MerchantVerificationStatus {
+  PENDING
+  UNVERIFIED
+  VERIFIED
 }
 
 type Mutation {
@@ -615,7 +723,7 @@ type User implements Node {
   name: String!
   email: String!
   customer: Customer!
-  account: MerchantAccount!
+  account: MerchantAccount
 }
 
 """A connection to a list of items."""
@@ -632,7 +740,7 @@ input UserCreateInput {
   name: String!
   email: String!
   customer: CustomerCreateOneInput!
-  account: MerchantAccountCreateOneInput!
+  account: MerchantAccountCreateOneInput
 }
 
 """An edge in a connection."""
@@ -706,7 +814,7 @@ input UserUpdateInput {
   name: String
   email: String
   customer: CustomerUpdateOneRequiredInput
-  account: MerchantAccountUpdateOneRequiredInput
+  account: MerchantAccountUpdateOneInput
 }
 
 input UserUpdateManyMutationInput {

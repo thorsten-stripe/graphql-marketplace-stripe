@@ -3,17 +3,28 @@ type User {
   name: String!
   email: String! @unique
   customer: Customer!
-  account: MerchantAccount!
+  account: MerchantAccount
 }
 
 type Customer {
   id: ID! @unique
-  stripeId: String! @unique
-  email: String! @unique
+  stripe_id: String! @unique
+  has_open_disputes: Boolean! @default(value: false)
+}
+
+enum MerchantVerificationStatus {
+  PENDING
+  UNVERIFIED
+  VERIFIED
 }
 
 type MerchantAccount {
   id: ID! @unique
-  stripeAccountId: String! @unique
-  email: String! @unique
+  stripe_id: String! @unique
+  business_name: String
+  charges_enabled: Boolean
+  payouts_enabled: Boolean
+  country: String!
+  default_currency: String!
+  verification_status: MerchantVerificationStatus!
 }
