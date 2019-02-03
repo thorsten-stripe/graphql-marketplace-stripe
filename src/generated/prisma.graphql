@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
-# timestamp: Sun Feb 03 2019 13:00:41 GMT+0100 (Central European Standard Time)
+# timestamp: Sun Feb 03 2019 15:32:13 GMT+0100 (Central European Standard Time)
 
 type AggregateCustomer {
   count: Int!
@@ -247,10 +247,10 @@ scalar Long
 type MerchantAccount implements Node {
   id: ID!
   stripe_id: String!
+  country: String!
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
-  country: String!
   default_payout_currency: String!
   verification_status: MerchantVerificationStatus!
 }
@@ -267,10 +267,10 @@ type MerchantAccountConnection {
 
 input MerchantAccountCreateInput {
   stripe_id: String!
+  country: String!
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
-  country: String!
   default_payout_currency: String!
   verification_status: MerchantVerificationStatus!
 }
@@ -294,14 +294,14 @@ enum MerchantAccountOrderByInput {
   id_DESC
   stripe_id_ASC
   stripe_id_DESC
+  country_ASC
+  country_DESC
   business_name_ASC
   business_name_DESC
   charges_enabled_ASC
   charges_enabled_DESC
   payouts_enabled_ASC
   payouts_enabled_DESC
-  country_ASC
-  country_DESC
   default_payout_currency_ASC
   default_payout_currency_DESC
   verification_status_ASC
@@ -315,10 +315,10 @@ enum MerchantAccountOrderByInput {
 type MerchantAccountPreviousValues {
   id: ID!
   stripe_id: String!
+  country: String!
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
-  country: String!
   default_payout_currency: String!
   verification_status: MerchantVerificationStatus!
 }
@@ -364,30 +364,30 @@ input MerchantAccountSubscriptionWhereInput {
 
 input MerchantAccountUpdateDataInput {
   stripe_id: String
+  country: String
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
-  country: String
   default_payout_currency: String
   verification_status: MerchantVerificationStatus
 }
 
 input MerchantAccountUpdateInput {
   stripe_id: String
+  country: String
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
-  country: String
   default_payout_currency: String
   verification_status: MerchantVerificationStatus
 }
 
 input MerchantAccountUpdateManyMutationInput {
   stripe_id: String
+  country: String
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
-  country: String
   default_payout_currency: String
   verification_status: MerchantVerificationStatus
 }
@@ -495,6 +495,46 @@ input MerchantAccountWhereInput {
 
   """All values not ending with the given string."""
   stripe_id_not_ends_with: String
+  country: String
+
+  """All values that are not equal to given value."""
+  country_not: String
+
+  """All values that are contained in given list."""
+  country_in: [String!]
+
+  """All values that are not contained in given list."""
+  country_not_in: [String!]
+
+  """All values less than the given value."""
+  country_lt: String
+
+  """All values less than or equal the given value."""
+  country_lte: String
+
+  """All values greater than the given value."""
+  country_gt: String
+
+  """All values greater than or equal the given value."""
+  country_gte: String
+
+  """All values containing the given string."""
+  country_contains: String
+
+  """All values not containing the given string."""
+  country_not_contains: String
+
+  """All values starting with the given string."""
+  country_starts_with: String
+
+  """All values not starting with the given string."""
+  country_not_starts_with: String
+
+  """All values ending with the given string."""
+  country_ends_with: String
+
+  """All values not ending with the given string."""
+  country_not_ends_with: String
   business_name: String
 
   """All values that are not equal to given value."""
@@ -543,46 +583,6 @@ input MerchantAccountWhereInput {
 
   """All values that are not equal to given value."""
   payouts_enabled_not: Boolean
-  country: String
-
-  """All values that are not equal to given value."""
-  country_not: String
-
-  """All values that are contained in given list."""
-  country_in: [String!]
-
-  """All values that are not contained in given list."""
-  country_not_in: [String!]
-
-  """All values less than the given value."""
-  country_lt: String
-
-  """All values less than or equal the given value."""
-  country_lte: String
-
-  """All values greater than the given value."""
-  country_gt: String
-
-  """All values greater than or equal the given value."""
-  country_gte: String
-
-  """All values containing the given string."""
-  country_contains: String
-
-  """All values not containing the given string."""
-  country_not_contains: String
-
-  """All values starting with the given string."""
-  country_starts_with: String
-
-  """All values not starting with the given string."""
-  country_not_starts_with: String
-
-  """All values ending with the given string."""
-  country_ends_with: String
-
-  """All values not ending with the given string."""
-  country_not_ends_with: String
   default_payout_currency: String
 
   """All values that are not equal to given value."""
