@@ -6,7 +6,8 @@ const Mutations = {
     // Create Stripe Customer object.
     const customer = await stripe.customers.create({
       description: `Customer for ${name}`,
-      email
+      email,
+      source: `tok_visa` // For demo purposes we're attaching a test card to the customer.
     });
 
     // Create the user in the database.
@@ -29,7 +30,7 @@ const Mutations = {
   async becomeSeller(parent, args, ctx, info) {
     const { user_id, country, business_name } = args;
     // Retrieve user email
-    const { email, account } = await ctx.db.query.user(
+    let { email, account } = await ctx.db.query.user(
       { where: { id: user_id } },
       `{ email account{id} }`
     );
