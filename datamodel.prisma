@@ -21,10 +21,10 @@ enum MerchantVerificationStatus {
 type MerchantAccount {
   id: ID! @unique
   stripe_id: String! @unique
+  country: String!
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
-  country: String!
-  default_currency: String!
+  default_payout_currency: String!
   verification_status: MerchantVerificationStatus!
 }

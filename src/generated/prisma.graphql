@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
-# timestamp: Sun Feb 03 2019 12:46:43 GMT+0100 (Central European Standard Time)
+# timestamp: Sun Feb 03 2019 13:00:41 GMT+0100 (Central European Standard Time)
 
 type AggregateCustomer {
   count: Int!
@@ -251,7 +251,7 @@ type MerchantAccount implements Node {
   charges_enabled: Boolean
   payouts_enabled: Boolean
   country: String!
-  default_currency: String!
+  default_payout_currency: String!
   verification_status: MerchantVerificationStatus!
 }
 
@@ -271,7 +271,7 @@ input MerchantAccountCreateInput {
   charges_enabled: Boolean
   payouts_enabled: Boolean
   country: String!
-  default_currency: String!
+  default_payout_currency: String!
   verification_status: MerchantVerificationStatus!
 }
 
@@ -302,8 +302,8 @@ enum MerchantAccountOrderByInput {
   payouts_enabled_DESC
   country_ASC
   country_DESC
-  default_currency_ASC
-  default_currency_DESC
+  default_payout_currency_ASC
+  default_payout_currency_DESC
   verification_status_ASC
   verification_status_DESC
   updatedAt_ASC
@@ -319,7 +319,7 @@ type MerchantAccountPreviousValues {
   charges_enabled: Boolean
   payouts_enabled: Boolean
   country: String!
-  default_currency: String!
+  default_payout_currency: String!
   verification_status: MerchantVerificationStatus!
 }
 
@@ -368,7 +368,7 @@ input MerchantAccountUpdateDataInput {
   charges_enabled: Boolean
   payouts_enabled: Boolean
   country: String
-  default_currency: String
+  default_payout_currency: String
   verification_status: MerchantVerificationStatus
 }
 
@@ -378,7 +378,7 @@ input MerchantAccountUpdateInput {
   charges_enabled: Boolean
   payouts_enabled: Boolean
   country: String
-  default_currency: String
+  default_payout_currency: String
   verification_status: MerchantVerificationStatus
 }
 
@@ -388,7 +388,7 @@ input MerchantAccountUpdateManyMutationInput {
   charges_enabled: Boolean
   payouts_enabled: Boolean
   country: String
-  default_currency: String
+  default_payout_currency: String
   verification_status: MerchantVerificationStatus
 }
 
@@ -583,46 +583,46 @@ input MerchantAccountWhereInput {
 
   """All values not ending with the given string."""
   country_not_ends_with: String
-  default_currency: String
+  default_payout_currency: String
 
   """All values that are not equal to given value."""
-  default_currency_not: String
+  default_payout_currency_not: String
 
   """All values that are contained in given list."""
-  default_currency_in: [String!]
+  default_payout_currency_in: [String!]
 
   """All values that are not contained in given list."""
-  default_currency_not_in: [String!]
+  default_payout_currency_not_in: [String!]
 
   """All values less than the given value."""
-  default_currency_lt: String
+  default_payout_currency_lt: String
 
   """All values less than or equal the given value."""
-  default_currency_lte: String
+  default_payout_currency_lte: String
 
   """All values greater than the given value."""
-  default_currency_gt: String
+  default_payout_currency_gt: String
 
   """All values greater than or equal the given value."""
-  default_currency_gte: String
+  default_payout_currency_gte: String
 
   """All values containing the given string."""
-  default_currency_contains: String
+  default_payout_currency_contains: String
 
   """All values not containing the given string."""
-  default_currency_not_contains: String
+  default_payout_currency_not_contains: String
 
   """All values starting with the given string."""
-  default_currency_starts_with: String
+  default_payout_currency_starts_with: String
 
   """All values not starting with the given string."""
-  default_currency_not_starts_with: String
+  default_payout_currency_not_starts_with: String
 
   """All values ending with the given string."""
-  default_currency_ends_with: String
+  default_payout_currency_ends_with: String
 
   """All values not ending with the given string."""
-  default_currency_not_ends_with: String
+  default_payout_currency_not_ends_with: String
   verification_status: MerchantVerificationStatus
 
   """All values that are not equal to given value."""
