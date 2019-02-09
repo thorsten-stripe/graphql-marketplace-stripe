@@ -30,30 +30,30 @@ const Mutations = {
   async becomeSeller(parent, args, ctx, info) {
     const { user_id, country, business_name } = args;
     // Retrieve user email
-    let { email, account } = await ctx.db.query.user(
+    const { email, seller } = await ctx.db.query.user(
       { where: { id: user_id } },
-      `{ email account{id} }`
+      `{ email seller{id} }`
     );
-    // Check if user already has seller account.
-    if (account) {
+    // Check if user already is a seller.
+    if (seller) {
       throw new Error(`This user already is a seller.`);
     }
 
     // Create Stripe Account object.
-    account = await stripe.accounts.create({
+    const account = await stripe.accounts.create({
       type: "custom",
       country,
       email,
       business_name
     });
 
-    // Create MerchantAccount while updating the user in the database.
+    // Create Seller record while updating the user in the database.
     const user = await ctx.db.mutation.updateUser(
       {
         where: { email },
         data: {
           email,
-          account: {
+          seller: {
             create: {
               stripe_id: account.id,
               country,

@@ -3,7 +3,7 @@ type User {
   name: String!
   email: String! @unique
   customer: Customer!
-  account: MerchantAccount
+  seller: Seller
 }
 
 type Customer {
@@ -12,19 +12,20 @@ type Customer {
   has_open_disputes: Boolean! @default(value: false)
 }
 
-enum MerchantVerificationStatus {
+enum SellerVerificationStatus {
   PENDING
   UNVERIFIED
   VERIFIED
 }
 
-type MerchantAccount {
+type Seller {
   id: ID! @unique
   stripe_id: String! @unique
   country: String!
+  commission_percentage: Int! @default(value: 10)
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
   default_payout_currency: String!
-  verification_status: MerchantVerificationStatus!
+  verification_status: SellerVerificationStatus!
 }

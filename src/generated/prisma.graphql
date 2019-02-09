@@ -1,11 +1,11 @@
 # source: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
-# timestamp: Sun Feb 03 2019 15:32:13 GMT+0100 (Central European Standard Time)
+# timestamp: Sat Feb 09 2019 17:07:00 GMT+0100 (Central European Standard Time)
 
 type AggregateCustomer {
   count: Int!
 }
 
-type AggregateMerchantAccount {
+type AggregateSeller {
   count: Int!
 }
 
@@ -244,58 +244,128 @@ Long can represent values between -(2^63) and 2^63 - 1.
 """
 scalar Long
 
-type MerchantAccount implements Node {
+type Mutation {
+  createUser(data: UserCreateInput!): User!
+  createCustomer(data: CustomerCreateInput!): Customer!
+  createSeller(data: SellerCreateInput!): Seller!
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer
+  updateSeller(data: SellerUpdateInput!, where: SellerWhereUniqueInput!): Seller
+  deleteUser(where: UserWhereUniqueInput!): User
+  deleteCustomer(where: CustomerWhereUniqueInput!): Customer
+  deleteSeller(where: SellerWhereUniqueInput!): Seller
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  upsertCustomer(where: CustomerWhereUniqueInput!, create: CustomerCreateInput!, update: CustomerUpdateInput!): Customer!
+  upsertSeller(where: SellerWhereUniqueInput!, create: SellerCreateInput!, update: SellerUpdateInput!): Seller!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  updateManyCustomers(data: CustomerUpdateManyMutationInput!, where: CustomerWhereInput): BatchPayload!
+  updateManySellers(data: SellerUpdateManyMutationInput!, where: SellerWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
+  deleteManyCustomers(where: CustomerWhereInput): BatchPayload!
+  deleteManySellers(where: SellerWhereInput): BatchPayload!
+}
+
+enum MutationType {
+  CREATED
+  UPDATED
+  DELETED
+}
+
+"""An object with an ID"""
+interface Node {
+  """The id of the object."""
+  id: ID!
+}
+
+"""Information about pagination in a connection."""
+type PageInfo {
+  """When paginating forwards, are there more items?"""
+  hasNextPage: Boolean!
+
+  """When paginating backwards, are there more items?"""
+  hasPreviousPage: Boolean!
+
+  """When paginating backwards, the cursor to continue."""
+  startCursor: String
+
+  """When paginating forwards, the cursor to continue."""
+  endCursor: String
+}
+
+type Query {
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  customers(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Customer]!
+  sellers(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Seller]!
+  user(where: UserWhereUniqueInput!): User
+  customer(where: CustomerWhereUniqueInput!): Customer
+  seller(where: SellerWhereUniqueInput!): Seller
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
+  customersConnection(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CustomerConnection!
+  sellersConnection(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SellerConnection!
+
+  """Fetches an object given its ID"""
+  node(
+    """The ID of an object"""
+    id: ID!
+  ): Node
+}
+
+type Seller implements Node {
   id: ID!
   stripe_id: String!
   country: String!
+  commission_percentage: Int!
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
   default_payout_currency: String!
-  verification_status: MerchantVerificationStatus!
+  verification_status: SellerVerificationStatus!
 }
 
 """A connection to a list of items."""
-type MerchantAccountConnection {
+type SellerConnection {
   """Information to aid in pagination."""
   pageInfo: PageInfo!
 
   """A list of edges."""
-  edges: [MerchantAccountEdge]!
-  aggregate: AggregateMerchantAccount!
+  edges: [SellerEdge]!
+  aggregate: AggregateSeller!
 }
 
-input MerchantAccountCreateInput {
+input SellerCreateInput {
   stripe_id: String!
   country: String!
+  commission_percentage: Int
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
   default_payout_currency: String!
-  verification_status: MerchantVerificationStatus!
+  verification_status: SellerVerificationStatus!
 }
 
-input MerchantAccountCreateOneInput {
-  create: MerchantAccountCreateInput
-  connect: MerchantAccountWhereUniqueInput
+input SellerCreateOneInput {
+  create: SellerCreateInput
+  connect: SellerWhereUniqueInput
 }
 
 """An edge in a connection."""
-type MerchantAccountEdge {
+type SellerEdge {
   """The item at the end of the edge."""
-  node: MerchantAccount!
+  node: Seller!
 
   """A cursor for use in pagination."""
   cursor: String!
 }
 
-enum MerchantAccountOrderByInput {
+enum SellerOrderByInput {
   id_ASC
   id_DESC
   stripe_id_ASC
   stripe_id_DESC
   country_ASC
   country_DESC
+  commission_percentage_ASC
+  commission_percentage_DESC
   business_name_ASC
   business_name_DESC
   charges_enabled_ASC
@@ -312,33 +382,34 @@ enum MerchantAccountOrderByInput {
   createdAt_DESC
 }
 
-type MerchantAccountPreviousValues {
+type SellerPreviousValues {
   id: ID!
   stripe_id: String!
   country: String!
+  commission_percentage: Int!
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
   default_payout_currency: String!
-  verification_status: MerchantVerificationStatus!
+  verification_status: SellerVerificationStatus!
 }
 
-type MerchantAccountSubscriptionPayload {
+type SellerSubscriptionPayload {
   mutation: MutationType!
-  node: MerchantAccount
+  node: Seller
   updatedFields: [String!]
-  previousValues: MerchantAccountPreviousValues
+  previousValues: SellerPreviousValues
 }
 
-input MerchantAccountSubscriptionWhereInput {
+input SellerSubscriptionWhereInput {
   """Logical AND on all given filters."""
-  AND: [MerchantAccountSubscriptionWhereInput!]
+  AND: [SellerSubscriptionWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [MerchantAccountSubscriptionWhereInput!]
+  OR: [SellerSubscriptionWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [MerchantAccountSubscriptionWhereInput!]
+  NOT: [SellerSubscriptionWhereInput!]
 
   """
   The subscription event gets dispatched when it's listed in mutation_in
@@ -359,62 +430,71 @@ input MerchantAccountSubscriptionWhereInput {
   The subscription event gets only dispatched when some of the field names included in this list have been updated
   """
   updatedFields_contains_some: [String!]
-  node: MerchantAccountWhereInput
+  node: SellerWhereInput
 }
 
-input MerchantAccountUpdateDataInput {
+input SellerUpdateDataInput {
   stripe_id: String
   country: String
+  commission_percentage: Int
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
   default_payout_currency: String
-  verification_status: MerchantVerificationStatus
+  verification_status: SellerVerificationStatus
 }
 
-input MerchantAccountUpdateInput {
+input SellerUpdateInput {
   stripe_id: String
   country: String
+  commission_percentage: Int
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
   default_payout_currency: String
-  verification_status: MerchantVerificationStatus
+  verification_status: SellerVerificationStatus
 }
 
-input MerchantAccountUpdateManyMutationInput {
+input SellerUpdateManyMutationInput {
   stripe_id: String
   country: String
+  commission_percentage: Int
   business_name: String
   charges_enabled: Boolean
   payouts_enabled: Boolean
   default_payout_currency: String
-  verification_status: MerchantVerificationStatus
+  verification_status: SellerVerificationStatus
 }
 
-input MerchantAccountUpdateOneInput {
-  create: MerchantAccountCreateInput
-  connect: MerchantAccountWhereUniqueInput
+input SellerUpdateOneInput {
+  create: SellerCreateInput
+  connect: SellerWhereUniqueInput
   disconnect: Boolean
   delete: Boolean
-  update: MerchantAccountUpdateDataInput
-  upsert: MerchantAccountUpsertNestedInput
+  update: SellerUpdateDataInput
+  upsert: SellerUpsertNestedInput
 }
 
-input MerchantAccountUpsertNestedInput {
-  update: MerchantAccountUpdateDataInput!
-  create: MerchantAccountCreateInput!
+input SellerUpsertNestedInput {
+  update: SellerUpdateDataInput!
+  create: SellerCreateInput!
 }
 
-input MerchantAccountWhereInput {
+enum SellerVerificationStatus {
+  PENDING
+  UNVERIFIED
+  VERIFIED
+}
+
+input SellerWhereInput {
   """Logical AND on all given filters."""
-  AND: [MerchantAccountWhereInput!]
+  AND: [SellerWhereInput!]
 
   """Logical OR on all given filters."""
-  OR: [MerchantAccountWhereInput!]
+  OR: [SellerWhereInput!]
 
   """Logical NOT on all given filters combined by AND."""
-  NOT: [MerchantAccountWhereInput!]
+  NOT: [SellerWhereInput!]
   id: ID
 
   """All values that are not equal to given value."""
@@ -535,6 +615,28 @@ input MerchantAccountWhereInput {
 
   """All values not ending with the given string."""
   country_not_ends_with: String
+  commission_percentage: Int
+
+  """All values that are not equal to given value."""
+  commission_percentage_not: Int
+
+  """All values that are contained in given list."""
+  commission_percentage_in: [Int!]
+
+  """All values that are not contained in given list."""
+  commission_percentage_not_in: [Int!]
+
+  """All values less than the given value."""
+  commission_percentage_lt: Int
+
+  """All values less than or equal the given value."""
+  commission_percentage_lte: Int
+
+  """All values greater than the given value."""
+  commission_percentage_gt: Int
+
+  """All values greater than or equal the given value."""
+  commission_percentage_gte: Int
   business_name: String
 
   """All values that are not equal to given value."""
@@ -623,99 +725,27 @@ input MerchantAccountWhereInput {
 
   """All values not ending with the given string."""
   default_payout_currency_not_ends_with: String
-  verification_status: MerchantVerificationStatus
+  verification_status: SellerVerificationStatus
 
   """All values that are not equal to given value."""
-  verification_status_not: MerchantVerificationStatus
+  verification_status_not: SellerVerificationStatus
 
   """All values that are contained in given list."""
-  verification_status_in: [MerchantVerificationStatus!]
+  verification_status_in: [SellerVerificationStatus!]
 
   """All values that are not contained in given list."""
-  verification_status_not_in: [MerchantVerificationStatus!]
+  verification_status_not_in: [SellerVerificationStatus!]
 }
 
-input MerchantAccountWhereUniqueInput {
+input SellerWhereUniqueInput {
   id: ID
   stripe_id: String
 }
 
-enum MerchantVerificationStatus {
-  PENDING
-  UNVERIFIED
-  VERIFIED
-}
-
-type Mutation {
-  createUser(data: UserCreateInput!): User!
-  createMerchantAccount(data: MerchantAccountCreateInput!): MerchantAccount!
-  createCustomer(data: CustomerCreateInput!): Customer!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateMerchantAccount(data: MerchantAccountUpdateInput!, where: MerchantAccountWhereUniqueInput!): MerchantAccount
-  updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer
-  deleteUser(where: UserWhereUniqueInput!): User
-  deleteMerchantAccount(where: MerchantAccountWhereUniqueInput!): MerchantAccount
-  deleteCustomer(where: CustomerWhereUniqueInput!): Customer
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  upsertMerchantAccount(where: MerchantAccountWhereUniqueInput!, create: MerchantAccountCreateInput!, update: MerchantAccountUpdateInput!): MerchantAccount!
-  upsertCustomer(where: CustomerWhereUniqueInput!, create: CustomerCreateInput!, update: CustomerUpdateInput!): Customer!
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  updateManyMerchantAccounts(data: MerchantAccountUpdateManyMutationInput!, where: MerchantAccountWhereInput): BatchPayload!
-  updateManyCustomers(data: CustomerUpdateManyMutationInput!, where: CustomerWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
-  deleteManyMerchantAccounts(where: MerchantAccountWhereInput): BatchPayload!
-  deleteManyCustomers(where: CustomerWhereInput): BatchPayload!
-}
-
-enum MutationType {
-  CREATED
-  UPDATED
-  DELETED
-}
-
-"""An object with an ID"""
-interface Node {
-  """The id of the object."""
-  id: ID!
-}
-
-"""Information about pagination in a connection."""
-type PageInfo {
-  """When paginating forwards, are there more items?"""
-  hasNextPage: Boolean!
-
-  """When paginating backwards, are there more items?"""
-  hasPreviousPage: Boolean!
-
-  """When paginating backwards, the cursor to continue."""
-  startCursor: String
-
-  """When paginating forwards, the cursor to continue."""
-  endCursor: String
-}
-
-type Query {
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  merchantAccounts(where: MerchantAccountWhereInput, orderBy: MerchantAccountOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [MerchantAccount]!
-  customers(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Customer]!
-  user(where: UserWhereUniqueInput!): User
-  merchantAccount(where: MerchantAccountWhereUniqueInput!): MerchantAccount
-  customer(where: CustomerWhereUniqueInput!): Customer
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  merchantAccountsConnection(where: MerchantAccountWhereInput, orderBy: MerchantAccountOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): MerchantAccountConnection!
-  customersConnection(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CustomerConnection!
-
-  """Fetches an object given its ID"""
-  node(
-    """The ID of an object"""
-    id: ID!
-  ): Node
-}
-
 type Subscription {
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-  merchantAccount(where: MerchantAccountSubscriptionWhereInput): MerchantAccountSubscriptionPayload
   customer(where: CustomerSubscriptionWhereInput): CustomerSubscriptionPayload
+  seller(where: SellerSubscriptionWhereInput): SellerSubscriptionPayload
 }
 
 type User implements Node {
@@ -723,7 +753,7 @@ type User implements Node {
   name: String!
   email: String!
   customer: Customer!
-  account: MerchantAccount
+  seller: Seller
 }
 
 """A connection to a list of items."""
@@ -740,7 +770,7 @@ input UserCreateInput {
   name: String!
   email: String!
   customer: CustomerCreateOneInput!
-  account: MerchantAccountCreateOneInput
+  seller: SellerCreateOneInput
 }
 
 """An edge in a connection."""
@@ -814,7 +844,7 @@ input UserUpdateInput {
   name: String
   email: String
   customer: CustomerUpdateOneRequiredInput
-  account: MerchantAccountUpdateOneInput
+  seller: SellerUpdateOneInput
 }
 
 input UserUpdateManyMutationInput {
@@ -952,7 +982,7 @@ input UserWhereInput {
   """All values not ending with the given string."""
   email_not_ends_with: String
   customer: CustomerWhereInput
-  account: MerchantAccountWhereInput
+  seller: SellerWhereInput
 }
 
 input UserWhereUniqueInput {
