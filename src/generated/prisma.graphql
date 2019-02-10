@@ -1,11 +1,27 @@
 # source: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
-# timestamp: Sat Feb 09 2019 17:07:00 GMT+0100 (Central European Standard Time)
+# timestamp: Sun Feb 10 2019 11:25:14 GMT+0100 (Central European Standard Time)
+
+type AggregateCommission {
+  count: Int!
+}
 
 type AggregateCustomer {
   count: Int!
 }
 
+type AggregateItem {
+  count: Int!
+}
+
 type AggregateSeller {
+  count: Int!
+}
+
+type AggregateTransaction {
+  count: Int!
+}
+
+type AggregateTransfer {
   count: Int!
 }
 
@@ -16,6 +32,252 @@ type AggregateUser {
 type BatchPayload {
   """The number of nodes that have been affected by the Batch operation."""
   count: Long!
+}
+
+type Commission implements Node {
+  id: ID!
+  amount: Int!
+  currency: String!
+  transaction: Transaction!
+}
+
+"""A connection to a list of items."""
+type CommissionConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [CommissionEdge]!
+  aggregate: AggregateCommission!
+}
+
+input CommissionCreateInput {
+  amount: Int!
+  currency: String!
+  transaction: TransactionCreateOneWithoutComissionInput!
+}
+
+input CommissionCreateOneWithoutTransactionInput {
+  create: CommissionCreateWithoutTransactionInput
+  connect: CommissionWhereUniqueInput
+}
+
+input CommissionCreateWithoutTransactionInput {
+  amount: Int!
+  currency: String!
+}
+
+"""An edge in a connection."""
+type CommissionEdge {
+  """The item at the end of the edge."""
+  node: Commission!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum CommissionOrderByInput {
+  id_ASC
+  id_DESC
+  amount_ASC
+  amount_DESC
+  currency_ASC
+  currency_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type CommissionPreviousValues {
+  id: ID!
+  amount: Int!
+  currency: String!
+}
+
+type CommissionSubscriptionPayload {
+  mutation: MutationType!
+  node: Commission
+  updatedFields: [String!]
+  previousValues: CommissionPreviousValues
+}
+
+input CommissionSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CommissionSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CommissionSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CommissionSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: CommissionWhereInput
+}
+
+input CommissionUpdateInput {
+  amount: Int
+  currency: String
+  transaction: TransactionUpdateOneRequiredWithoutComissionInput
+}
+
+input CommissionUpdateManyMutationInput {
+  amount: Int
+  currency: String
+}
+
+input CommissionUpdateOneRequiredWithoutTransactionInput {
+  create: CommissionCreateWithoutTransactionInput
+  connect: CommissionWhereUniqueInput
+  update: CommissionUpdateWithoutTransactionDataInput
+  upsert: CommissionUpsertWithoutTransactionInput
+}
+
+input CommissionUpdateWithoutTransactionDataInput {
+  amount: Int
+  currency: String
+}
+
+input CommissionUpsertWithoutTransactionInput {
+  update: CommissionUpdateWithoutTransactionDataInput!
+  create: CommissionCreateWithoutTransactionInput!
+}
+
+input CommissionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [CommissionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [CommissionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [CommissionWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  amount: Int
+
+  """All values that are not equal to given value."""
+  amount_not: Int
+
+  """All values that are contained in given list."""
+  amount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  amount_not_in: [Int!]
+
+  """All values less than the given value."""
+  amount_lt: Int
+
+  """All values less than or equal the given value."""
+  amount_lte: Int
+
+  """All values greater than the given value."""
+  amount_gt: Int
+
+  """All values greater than or equal the given value."""
+  amount_gte: Int
+  currency: String
+
+  """All values that are not equal to given value."""
+  currency_not: String
+
+  """All values that are contained in given list."""
+  currency_in: [String!]
+
+  """All values that are not contained in given list."""
+  currency_not_in: [String!]
+
+  """All values less than the given value."""
+  currency_lt: String
+
+  """All values less than or equal the given value."""
+  currency_lte: String
+
+  """All values greater than the given value."""
+  currency_gt: String
+
+  """All values greater than or equal the given value."""
+  currency_gte: String
+
+  """All values containing the given string."""
+  currency_contains: String
+
+  """All values not containing the given string."""
+  currency_not_contains: String
+
+  """All values starting with the given string."""
+  currency_starts_with: String
+
+  """All values not starting with the given string."""
+  currency_not_starts_with: String
+
+  """All values ending with the given string."""
+  currency_ends_with: String
+
+  """All values not ending with the given string."""
+  currency_not_ends_with: String
+  transaction: TransactionWhereInput
+}
+
+input CommissionWhereUniqueInput {
+  id: ID
 }
 
 type Customer implements Node {
@@ -238,6 +500,382 @@ input CustomerWhereUniqueInput {
   stripe_id: String
 }
 
+type Item implements Node {
+  id: ID!
+  price: Int!
+  currency: String!
+  seller: User!
+}
+
+"""A connection to a list of items."""
+type ItemConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [ItemEdge]!
+  aggregate: AggregateItem!
+}
+
+input ItemCreateInput {
+  price: Int!
+  currency: String!
+  seller: UserCreateOneInput!
+}
+
+input ItemCreateManyInput {
+  create: [ItemCreateInput!]
+  connect: [ItemWhereUniqueInput!]
+}
+
+"""An edge in a connection."""
+type ItemEdge {
+  """The item at the end of the edge."""
+  node: Item!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum ItemOrderByInput {
+  id_ASC
+  id_DESC
+  price_ASC
+  price_DESC
+  currency_ASC
+  currency_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type ItemPreviousValues {
+  id: ID!
+  price: Int!
+  currency: String!
+}
+
+input ItemScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ItemScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ItemScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ItemScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  price: Int
+
+  """All values that are not equal to given value."""
+  price_not: Int
+
+  """All values that are contained in given list."""
+  price_in: [Int!]
+
+  """All values that are not contained in given list."""
+  price_not_in: [Int!]
+
+  """All values less than the given value."""
+  price_lt: Int
+
+  """All values less than or equal the given value."""
+  price_lte: Int
+
+  """All values greater than the given value."""
+  price_gt: Int
+
+  """All values greater than or equal the given value."""
+  price_gte: Int
+  currency: String
+
+  """All values that are not equal to given value."""
+  currency_not: String
+
+  """All values that are contained in given list."""
+  currency_in: [String!]
+
+  """All values that are not contained in given list."""
+  currency_not_in: [String!]
+
+  """All values less than the given value."""
+  currency_lt: String
+
+  """All values less than or equal the given value."""
+  currency_lte: String
+
+  """All values greater than the given value."""
+  currency_gt: String
+
+  """All values greater than or equal the given value."""
+  currency_gte: String
+
+  """All values containing the given string."""
+  currency_contains: String
+
+  """All values not containing the given string."""
+  currency_not_contains: String
+
+  """All values starting with the given string."""
+  currency_starts_with: String
+
+  """All values not starting with the given string."""
+  currency_not_starts_with: String
+
+  """All values ending with the given string."""
+  currency_ends_with: String
+
+  """All values not ending with the given string."""
+  currency_not_ends_with: String
+}
+
+type ItemSubscriptionPayload {
+  mutation: MutationType!
+  node: Item
+  updatedFields: [String!]
+  previousValues: ItemPreviousValues
+}
+
+input ItemSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ItemSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ItemSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ItemSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: ItemWhereInput
+}
+
+input ItemUpdateDataInput {
+  price: Int
+  currency: String
+  seller: UserUpdateOneRequiredInput
+}
+
+input ItemUpdateInput {
+  price: Int
+  currency: String
+  seller: UserUpdateOneRequiredInput
+}
+
+input ItemUpdateManyDataInput {
+  price: Int
+  currency: String
+}
+
+input ItemUpdateManyInput {
+  create: [ItemCreateInput!]
+  connect: [ItemWhereUniqueInput!]
+  set: [ItemWhereUniqueInput!]
+  disconnect: [ItemWhereUniqueInput!]
+  delete: [ItemWhereUniqueInput!]
+  update: [ItemUpdateWithWhereUniqueNestedInput!]
+  updateMany: [ItemUpdateManyWithWhereNestedInput!]
+  deleteMany: [ItemScalarWhereInput!]
+  upsert: [ItemUpsertWithWhereUniqueNestedInput!]
+}
+
+input ItemUpdateManyMutationInput {
+  price: Int
+  currency: String
+}
+
+input ItemUpdateManyWithWhereNestedInput {
+  where: ItemScalarWhereInput!
+  data: ItemUpdateManyDataInput!
+}
+
+input ItemUpdateWithWhereUniqueNestedInput {
+  where: ItemWhereUniqueInput!
+  data: ItemUpdateDataInput!
+}
+
+input ItemUpsertWithWhereUniqueNestedInput {
+  where: ItemWhereUniqueInput!
+  update: ItemUpdateDataInput!
+  create: ItemCreateInput!
+}
+
+input ItemWhereInput {
+  """Logical AND on all given filters."""
+  AND: [ItemWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [ItemWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [ItemWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  price: Int
+
+  """All values that are not equal to given value."""
+  price_not: Int
+
+  """All values that are contained in given list."""
+  price_in: [Int!]
+
+  """All values that are not contained in given list."""
+  price_not_in: [Int!]
+
+  """All values less than the given value."""
+  price_lt: Int
+
+  """All values less than or equal the given value."""
+  price_lte: Int
+
+  """All values greater than the given value."""
+  price_gt: Int
+
+  """All values greater than or equal the given value."""
+  price_gte: Int
+  currency: String
+
+  """All values that are not equal to given value."""
+  currency_not: String
+
+  """All values that are contained in given list."""
+  currency_in: [String!]
+
+  """All values that are not contained in given list."""
+  currency_not_in: [String!]
+
+  """All values less than the given value."""
+  currency_lt: String
+
+  """All values less than or equal the given value."""
+  currency_lte: String
+
+  """All values greater than the given value."""
+  currency_gt: String
+
+  """All values greater than or equal the given value."""
+  currency_gte: String
+
+  """All values containing the given string."""
+  currency_contains: String
+
+  """All values not containing the given string."""
+  currency_not_contains: String
+
+  """All values starting with the given string."""
+  currency_starts_with: String
+
+  """All values not starting with the given string."""
+  currency_not_starts_with: String
+
+  """All values ending with the given string."""
+  currency_ends_with: String
+
+  """All values not ending with the given string."""
+  currency_not_ends_with: String
+  seller: UserWhereInput
+}
+
+input ItemWhereUniqueInput {
+  id: ID
+}
+
 """
 The `Long` scalar type represents non-fractional signed whole numeric values.
 Long can represent values between -(2^63) and 2^63 - 1.
@@ -245,24 +883,48 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createUser(data: UserCreateInput!): User!
-  createCustomer(data: CustomerCreateInput!): Customer!
+  createTransaction(data: TransactionCreateInput!): Transaction!
+  createTransfer(data: TransferCreateInput!): Transfer!
+  createCommission(data: CommissionCreateInput!): Commission!
   createSeller(data: SellerCreateInput!): Seller!
-  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer
+  createItem(data: ItemCreateInput!): Item!
+  createCustomer(data: CustomerCreateInput!): Customer!
+  createUser(data: UserCreateInput!): User!
+  updateTransaction(data: TransactionUpdateInput!, where: TransactionWhereUniqueInput!): Transaction
+  updateTransfer(data: TransferUpdateInput!, where: TransferWhereUniqueInput!): Transfer
+  updateCommission(data: CommissionUpdateInput!, where: CommissionWhereUniqueInput!): Commission
   updateSeller(data: SellerUpdateInput!, where: SellerWhereUniqueInput!): Seller
-  deleteUser(where: UserWhereUniqueInput!): User
-  deleteCustomer(where: CustomerWhereUniqueInput!): Customer
+  updateItem(data: ItemUpdateInput!, where: ItemWhereUniqueInput!): Item
+  updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer
+  updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  deleteTransaction(where: TransactionWhereUniqueInput!): Transaction
+  deleteTransfer(where: TransferWhereUniqueInput!): Transfer
+  deleteCommission(where: CommissionWhereUniqueInput!): Commission
   deleteSeller(where: SellerWhereUniqueInput!): Seller
-  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  upsertCustomer(where: CustomerWhereUniqueInput!, create: CustomerCreateInput!, update: CustomerUpdateInput!): Customer!
+  deleteItem(where: ItemWhereUniqueInput!): Item
+  deleteCustomer(where: CustomerWhereUniqueInput!): Customer
+  deleteUser(where: UserWhereUniqueInput!): User
+  upsertTransaction(where: TransactionWhereUniqueInput!, create: TransactionCreateInput!, update: TransactionUpdateInput!): Transaction!
+  upsertTransfer(where: TransferWhereUniqueInput!, create: TransferCreateInput!, update: TransferUpdateInput!): Transfer!
+  upsertCommission(where: CommissionWhereUniqueInput!, create: CommissionCreateInput!, update: CommissionUpdateInput!): Commission!
   upsertSeller(where: SellerWhereUniqueInput!, create: SellerCreateInput!, update: SellerUpdateInput!): Seller!
-  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  updateManyCustomers(data: CustomerUpdateManyMutationInput!, where: CustomerWhereInput): BatchPayload!
+  upsertItem(where: ItemWhereUniqueInput!, create: ItemCreateInput!, update: ItemUpdateInput!): Item!
+  upsertCustomer(where: CustomerWhereUniqueInput!, create: CustomerCreateInput!, update: CustomerUpdateInput!): Customer!
+  upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  updateManyTransactions(data: TransactionUpdateManyMutationInput!, where: TransactionWhereInput): BatchPayload!
+  updateManyTransfers(data: TransferUpdateManyMutationInput!, where: TransferWhereInput): BatchPayload!
+  updateManyCommissions(data: CommissionUpdateManyMutationInput!, where: CommissionWhereInput): BatchPayload!
   updateManySellers(data: SellerUpdateManyMutationInput!, where: SellerWhereInput): BatchPayload!
-  deleteManyUsers(where: UserWhereInput): BatchPayload!
-  deleteManyCustomers(where: CustomerWhereInput): BatchPayload!
+  updateManyItems(data: ItemUpdateManyMutationInput!, where: ItemWhereInput): BatchPayload!
+  updateManyCustomers(data: CustomerUpdateManyMutationInput!, where: CustomerWhereInput): BatchPayload!
+  updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  deleteManyTransactions(where: TransactionWhereInput): BatchPayload!
+  deleteManyTransfers(where: TransferWhereInput): BatchPayload!
+  deleteManyCommissions(where: CommissionWhereInput): BatchPayload!
   deleteManySellers(where: SellerWhereInput): BatchPayload!
+  deleteManyItems(where: ItemWhereInput): BatchPayload!
+  deleteManyCustomers(where: CustomerWhereInput): BatchPayload!
+  deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
 enum MutationType {
@@ -293,15 +955,27 @@ type PageInfo {
 }
 
 type Query {
-  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  customers(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Customer]!
+  transactions(where: TransactionWhereInput, orderBy: TransactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Transaction]!
+  transfers(where: TransferWhereInput, orderBy: TransferOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Transfer]!
+  commissions(where: CommissionWhereInput, orderBy: CommissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Commission]!
   sellers(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Seller]!
-  user(where: UserWhereUniqueInput!): User
-  customer(where: CustomerWhereUniqueInput!): Customer
+  items(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Item]!
+  customers(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Customer]!
+  users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  transaction(where: TransactionWhereUniqueInput!): Transaction
+  transfer(where: TransferWhereUniqueInput!): Transfer
+  commission(where: CommissionWhereUniqueInput!): Commission
   seller(where: SellerWhereUniqueInput!): Seller
-  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
-  customersConnection(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CustomerConnection!
+  item(where: ItemWhereUniqueInput!): Item
+  customer(where: CustomerWhereUniqueInput!): Customer
+  user(where: UserWhereUniqueInput!): User
+  transactionsConnection(where: TransactionWhereInput, orderBy: TransactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TransactionConnection!
+  transfersConnection(where: TransferWhereInput, orderBy: TransferOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TransferConnection!
+  commissionsConnection(where: CommissionWhereInput, orderBy: CommissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommissionConnection!
   sellersConnection(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SellerConnection!
+  itemsConnection(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ItemConnection!
+  customersConnection(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CustomerConnection!
+  usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
   """Fetches an object given its ID"""
   node(
@@ -743,9 +1417,1036 @@ input SellerWhereUniqueInput {
 }
 
 type Subscription {
-  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
-  customer(where: CustomerSubscriptionWhereInput): CustomerSubscriptionPayload
+  transaction(where: TransactionSubscriptionWhereInput): TransactionSubscriptionPayload
+  transfer(where: TransferSubscriptionWhereInput): TransferSubscriptionPayload
+  commission(where: CommissionSubscriptionWhereInput): CommissionSubscriptionPayload
   seller(where: SellerSubscriptionWhereInput): SellerSubscriptionPayload
+  item(where: ItemSubscriptionWhereInput): ItemSubscriptionPayload
+  customer(where: CustomerSubscriptionWhereInput): CustomerSubscriptionPayload
+  user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
+}
+
+type Transaction implements Node {
+  id: ID!
+  stripe_id: String!
+  items(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Item!]
+  buyer: User!
+  sellers(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User!]
+  amount: Int!
+  amount_refunded: Int!
+  presentment_currency: String!
+  settlement_currency: String!
+  exchange_rate: Float
+  stripe_fee: Int!
+  net_amount: Int!
+  transfers(where: TransferWhereInput, orderBy: TransferOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Transfer!]
+  comission: Commission!
+}
+
+"""A connection to a list of items."""
+type TransactionConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [TransactionEdge]!
+  aggregate: AggregateTransaction!
+}
+
+input TransactionCreateInput {
+  stripe_id: String!
+  amount: Int!
+  amount_refunded: Int
+  presentment_currency: String!
+  settlement_currency: String!
+  exchange_rate: Float
+  stripe_fee: Int!
+  net_amount: Int!
+  items: ItemCreateManyInput
+  buyer: UserCreateOneInput!
+  sellers: UserCreateManyInput
+  transfers: TransferCreateManyWithoutTransactionInput
+  comission: CommissionCreateOneWithoutTransactionInput!
+}
+
+input TransactionCreateOneWithoutComissionInput {
+  create: TransactionCreateWithoutComissionInput
+  connect: TransactionWhereUniqueInput
+}
+
+input TransactionCreateOneWithoutTransfersInput {
+  create: TransactionCreateWithoutTransfersInput
+  connect: TransactionWhereUniqueInput
+}
+
+input TransactionCreateWithoutComissionInput {
+  stripe_id: String!
+  amount: Int!
+  amount_refunded: Int
+  presentment_currency: String!
+  settlement_currency: String!
+  exchange_rate: Float
+  stripe_fee: Int!
+  net_amount: Int!
+  items: ItemCreateManyInput
+  buyer: UserCreateOneInput!
+  sellers: UserCreateManyInput
+  transfers: TransferCreateManyWithoutTransactionInput
+}
+
+input TransactionCreateWithoutTransfersInput {
+  stripe_id: String!
+  amount: Int!
+  amount_refunded: Int
+  presentment_currency: String!
+  settlement_currency: String!
+  exchange_rate: Float
+  stripe_fee: Int!
+  net_amount: Int!
+  items: ItemCreateManyInput
+  buyer: UserCreateOneInput!
+  sellers: UserCreateManyInput
+  comission: CommissionCreateOneWithoutTransactionInput!
+}
+
+"""An edge in a connection."""
+type TransactionEdge {
+  """The item at the end of the edge."""
+  node: Transaction!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum TransactionOrderByInput {
+  id_ASC
+  id_DESC
+  stripe_id_ASC
+  stripe_id_DESC
+  amount_ASC
+  amount_DESC
+  amount_refunded_ASC
+  amount_refunded_DESC
+  presentment_currency_ASC
+  presentment_currency_DESC
+  settlement_currency_ASC
+  settlement_currency_DESC
+  exchange_rate_ASC
+  exchange_rate_DESC
+  stripe_fee_ASC
+  stripe_fee_DESC
+  net_amount_ASC
+  net_amount_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type TransactionPreviousValues {
+  id: ID!
+  stripe_id: String!
+  amount: Int!
+  amount_refunded: Int!
+  presentment_currency: String!
+  settlement_currency: String!
+  exchange_rate: Float
+  stripe_fee: Int!
+  net_amount: Int!
+}
+
+type TransactionSubscriptionPayload {
+  mutation: MutationType!
+  node: Transaction
+  updatedFields: [String!]
+  previousValues: TransactionPreviousValues
+}
+
+input TransactionSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TransactionSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TransactionSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TransactionSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: TransactionWhereInput
+}
+
+input TransactionUpdateInput {
+  stripe_id: String
+  amount: Int
+  amount_refunded: Int
+  presentment_currency: String
+  settlement_currency: String
+  exchange_rate: Float
+  stripe_fee: Int
+  net_amount: Int
+  items: ItemUpdateManyInput
+  buyer: UserUpdateOneRequiredInput
+  sellers: UserUpdateManyInput
+  transfers: TransferUpdateManyWithoutTransactionInput
+  comission: CommissionUpdateOneRequiredWithoutTransactionInput
+}
+
+input TransactionUpdateManyMutationInput {
+  stripe_id: String
+  amount: Int
+  amount_refunded: Int
+  presentment_currency: String
+  settlement_currency: String
+  exchange_rate: Float
+  stripe_fee: Int
+  net_amount: Int
+}
+
+input TransactionUpdateOneRequiredWithoutComissionInput {
+  create: TransactionCreateWithoutComissionInput
+  connect: TransactionWhereUniqueInput
+  update: TransactionUpdateWithoutComissionDataInput
+  upsert: TransactionUpsertWithoutComissionInput
+}
+
+input TransactionUpdateOneRequiredWithoutTransfersInput {
+  create: TransactionCreateWithoutTransfersInput
+  connect: TransactionWhereUniqueInput
+  update: TransactionUpdateWithoutTransfersDataInput
+  upsert: TransactionUpsertWithoutTransfersInput
+}
+
+input TransactionUpdateWithoutComissionDataInput {
+  stripe_id: String
+  amount: Int
+  amount_refunded: Int
+  presentment_currency: String
+  settlement_currency: String
+  exchange_rate: Float
+  stripe_fee: Int
+  net_amount: Int
+  items: ItemUpdateManyInput
+  buyer: UserUpdateOneRequiredInput
+  sellers: UserUpdateManyInput
+  transfers: TransferUpdateManyWithoutTransactionInput
+}
+
+input TransactionUpdateWithoutTransfersDataInput {
+  stripe_id: String
+  amount: Int
+  amount_refunded: Int
+  presentment_currency: String
+  settlement_currency: String
+  exchange_rate: Float
+  stripe_fee: Int
+  net_amount: Int
+  items: ItemUpdateManyInput
+  buyer: UserUpdateOneRequiredInput
+  sellers: UserUpdateManyInput
+  comission: CommissionUpdateOneRequiredWithoutTransactionInput
+}
+
+input TransactionUpsertWithoutComissionInput {
+  update: TransactionUpdateWithoutComissionDataInput!
+  create: TransactionCreateWithoutComissionInput!
+}
+
+input TransactionUpsertWithoutTransfersInput {
+  update: TransactionUpdateWithoutTransfersDataInput!
+  create: TransactionCreateWithoutTransfersInput!
+}
+
+input TransactionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TransactionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TransactionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TransactionWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  stripe_id: String
+
+  """All values that are not equal to given value."""
+  stripe_id_not: String
+
+  """All values that are contained in given list."""
+  stripe_id_in: [String!]
+
+  """All values that are not contained in given list."""
+  stripe_id_not_in: [String!]
+
+  """All values less than the given value."""
+  stripe_id_lt: String
+
+  """All values less than or equal the given value."""
+  stripe_id_lte: String
+
+  """All values greater than the given value."""
+  stripe_id_gt: String
+
+  """All values greater than or equal the given value."""
+  stripe_id_gte: String
+
+  """All values containing the given string."""
+  stripe_id_contains: String
+
+  """All values not containing the given string."""
+  stripe_id_not_contains: String
+
+  """All values starting with the given string."""
+  stripe_id_starts_with: String
+
+  """All values not starting with the given string."""
+  stripe_id_not_starts_with: String
+
+  """All values ending with the given string."""
+  stripe_id_ends_with: String
+
+  """All values not ending with the given string."""
+  stripe_id_not_ends_with: String
+  amount: Int
+
+  """All values that are not equal to given value."""
+  amount_not: Int
+
+  """All values that are contained in given list."""
+  amount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  amount_not_in: [Int!]
+
+  """All values less than the given value."""
+  amount_lt: Int
+
+  """All values less than or equal the given value."""
+  amount_lte: Int
+
+  """All values greater than the given value."""
+  amount_gt: Int
+
+  """All values greater than or equal the given value."""
+  amount_gte: Int
+  amount_refunded: Int
+
+  """All values that are not equal to given value."""
+  amount_refunded_not: Int
+
+  """All values that are contained in given list."""
+  amount_refunded_in: [Int!]
+
+  """All values that are not contained in given list."""
+  amount_refunded_not_in: [Int!]
+
+  """All values less than the given value."""
+  amount_refunded_lt: Int
+
+  """All values less than or equal the given value."""
+  amount_refunded_lte: Int
+
+  """All values greater than the given value."""
+  amount_refunded_gt: Int
+
+  """All values greater than or equal the given value."""
+  amount_refunded_gte: Int
+  presentment_currency: String
+
+  """All values that are not equal to given value."""
+  presentment_currency_not: String
+
+  """All values that are contained in given list."""
+  presentment_currency_in: [String!]
+
+  """All values that are not contained in given list."""
+  presentment_currency_not_in: [String!]
+
+  """All values less than the given value."""
+  presentment_currency_lt: String
+
+  """All values less than or equal the given value."""
+  presentment_currency_lte: String
+
+  """All values greater than the given value."""
+  presentment_currency_gt: String
+
+  """All values greater than or equal the given value."""
+  presentment_currency_gte: String
+
+  """All values containing the given string."""
+  presentment_currency_contains: String
+
+  """All values not containing the given string."""
+  presentment_currency_not_contains: String
+
+  """All values starting with the given string."""
+  presentment_currency_starts_with: String
+
+  """All values not starting with the given string."""
+  presentment_currency_not_starts_with: String
+
+  """All values ending with the given string."""
+  presentment_currency_ends_with: String
+
+  """All values not ending with the given string."""
+  presentment_currency_not_ends_with: String
+  settlement_currency: String
+
+  """All values that are not equal to given value."""
+  settlement_currency_not: String
+
+  """All values that are contained in given list."""
+  settlement_currency_in: [String!]
+
+  """All values that are not contained in given list."""
+  settlement_currency_not_in: [String!]
+
+  """All values less than the given value."""
+  settlement_currency_lt: String
+
+  """All values less than or equal the given value."""
+  settlement_currency_lte: String
+
+  """All values greater than the given value."""
+  settlement_currency_gt: String
+
+  """All values greater than or equal the given value."""
+  settlement_currency_gte: String
+
+  """All values containing the given string."""
+  settlement_currency_contains: String
+
+  """All values not containing the given string."""
+  settlement_currency_not_contains: String
+
+  """All values starting with the given string."""
+  settlement_currency_starts_with: String
+
+  """All values not starting with the given string."""
+  settlement_currency_not_starts_with: String
+
+  """All values ending with the given string."""
+  settlement_currency_ends_with: String
+
+  """All values not ending with the given string."""
+  settlement_currency_not_ends_with: String
+  exchange_rate: Float
+
+  """All values that are not equal to given value."""
+  exchange_rate_not: Float
+
+  """All values that are contained in given list."""
+  exchange_rate_in: [Float!]
+
+  """All values that are not contained in given list."""
+  exchange_rate_not_in: [Float!]
+
+  """All values less than the given value."""
+  exchange_rate_lt: Float
+
+  """All values less than or equal the given value."""
+  exchange_rate_lte: Float
+
+  """All values greater than the given value."""
+  exchange_rate_gt: Float
+
+  """All values greater than or equal the given value."""
+  exchange_rate_gte: Float
+  stripe_fee: Int
+
+  """All values that are not equal to given value."""
+  stripe_fee_not: Int
+
+  """All values that are contained in given list."""
+  stripe_fee_in: [Int!]
+
+  """All values that are not contained in given list."""
+  stripe_fee_not_in: [Int!]
+
+  """All values less than the given value."""
+  stripe_fee_lt: Int
+
+  """All values less than or equal the given value."""
+  stripe_fee_lte: Int
+
+  """All values greater than the given value."""
+  stripe_fee_gt: Int
+
+  """All values greater than or equal the given value."""
+  stripe_fee_gte: Int
+  net_amount: Int
+
+  """All values that are not equal to given value."""
+  net_amount_not: Int
+
+  """All values that are contained in given list."""
+  net_amount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  net_amount_not_in: [Int!]
+
+  """All values less than the given value."""
+  net_amount_lt: Int
+
+  """All values less than or equal the given value."""
+  net_amount_lte: Int
+
+  """All values greater than the given value."""
+  net_amount_gt: Int
+
+  """All values greater than or equal the given value."""
+  net_amount_gte: Int
+  items_every: ItemWhereInput
+  items_some: ItemWhereInput
+  items_none: ItemWhereInput
+  buyer: UserWhereInput
+  sellers_every: UserWhereInput
+  sellers_some: UserWhereInput
+  sellers_none: UserWhereInput
+  transfers_every: TransferWhereInput
+  transfers_some: TransferWhereInput
+  transfers_none: TransferWhereInput
+  comission: CommissionWhereInput
+}
+
+input TransactionWhereUniqueInput {
+  id: ID
+  stripe_id: String
+}
+
+type Transfer implements Node {
+  id: ID!
+  stripe_id: String!
+  recipient: User!
+  transaction: Transaction!
+  amount: Int!
+  currency: String!
+}
+
+"""A connection to a list of items."""
+type TransferConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [TransferEdge]!
+  aggregate: AggregateTransfer!
+}
+
+input TransferCreateInput {
+  stripe_id: String!
+  amount: Int!
+  currency: String!
+  recipient: UserCreateOneInput!
+  transaction: TransactionCreateOneWithoutTransfersInput!
+}
+
+input TransferCreateManyWithoutTransactionInput {
+  create: [TransferCreateWithoutTransactionInput!]
+  connect: [TransferWhereUniqueInput!]
+}
+
+input TransferCreateWithoutTransactionInput {
+  stripe_id: String!
+  amount: Int!
+  currency: String!
+  recipient: UserCreateOneInput!
+}
+
+"""An edge in a connection."""
+type TransferEdge {
+  """The item at the end of the edge."""
+  node: Transfer!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum TransferOrderByInput {
+  id_ASC
+  id_DESC
+  stripe_id_ASC
+  stripe_id_DESC
+  amount_ASC
+  amount_DESC
+  currency_ASC
+  currency_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type TransferPreviousValues {
+  id: ID!
+  stripe_id: String!
+  amount: Int!
+  currency: String!
+}
+
+input TransferScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TransferScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TransferScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TransferScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  stripe_id: String
+
+  """All values that are not equal to given value."""
+  stripe_id_not: String
+
+  """All values that are contained in given list."""
+  stripe_id_in: [String!]
+
+  """All values that are not contained in given list."""
+  stripe_id_not_in: [String!]
+
+  """All values less than the given value."""
+  stripe_id_lt: String
+
+  """All values less than or equal the given value."""
+  stripe_id_lte: String
+
+  """All values greater than the given value."""
+  stripe_id_gt: String
+
+  """All values greater than or equal the given value."""
+  stripe_id_gte: String
+
+  """All values containing the given string."""
+  stripe_id_contains: String
+
+  """All values not containing the given string."""
+  stripe_id_not_contains: String
+
+  """All values starting with the given string."""
+  stripe_id_starts_with: String
+
+  """All values not starting with the given string."""
+  stripe_id_not_starts_with: String
+
+  """All values ending with the given string."""
+  stripe_id_ends_with: String
+
+  """All values not ending with the given string."""
+  stripe_id_not_ends_with: String
+  amount: Int
+
+  """All values that are not equal to given value."""
+  amount_not: Int
+
+  """All values that are contained in given list."""
+  amount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  amount_not_in: [Int!]
+
+  """All values less than the given value."""
+  amount_lt: Int
+
+  """All values less than or equal the given value."""
+  amount_lte: Int
+
+  """All values greater than the given value."""
+  amount_gt: Int
+
+  """All values greater than or equal the given value."""
+  amount_gte: Int
+  currency: String
+
+  """All values that are not equal to given value."""
+  currency_not: String
+
+  """All values that are contained in given list."""
+  currency_in: [String!]
+
+  """All values that are not contained in given list."""
+  currency_not_in: [String!]
+
+  """All values less than the given value."""
+  currency_lt: String
+
+  """All values less than or equal the given value."""
+  currency_lte: String
+
+  """All values greater than the given value."""
+  currency_gt: String
+
+  """All values greater than or equal the given value."""
+  currency_gte: String
+
+  """All values containing the given string."""
+  currency_contains: String
+
+  """All values not containing the given string."""
+  currency_not_contains: String
+
+  """All values starting with the given string."""
+  currency_starts_with: String
+
+  """All values not starting with the given string."""
+  currency_not_starts_with: String
+
+  """All values ending with the given string."""
+  currency_ends_with: String
+
+  """All values not ending with the given string."""
+  currency_not_ends_with: String
+}
+
+type TransferSubscriptionPayload {
+  mutation: MutationType!
+  node: Transfer
+  updatedFields: [String!]
+  previousValues: TransferPreviousValues
+}
+
+input TransferSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TransferSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TransferSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TransferSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: TransferWhereInput
+}
+
+input TransferUpdateInput {
+  stripe_id: String
+  amount: Int
+  currency: String
+  recipient: UserUpdateOneRequiredInput
+  transaction: TransactionUpdateOneRequiredWithoutTransfersInput
+}
+
+input TransferUpdateManyDataInput {
+  stripe_id: String
+  amount: Int
+  currency: String
+}
+
+input TransferUpdateManyMutationInput {
+  stripe_id: String
+  amount: Int
+  currency: String
+}
+
+input TransferUpdateManyWithoutTransactionInput {
+  create: [TransferCreateWithoutTransactionInput!]
+  connect: [TransferWhereUniqueInput!]
+  set: [TransferWhereUniqueInput!]
+  disconnect: [TransferWhereUniqueInput!]
+  delete: [TransferWhereUniqueInput!]
+  update: [TransferUpdateWithWhereUniqueWithoutTransactionInput!]
+  updateMany: [TransferUpdateManyWithWhereNestedInput!]
+  deleteMany: [TransferScalarWhereInput!]
+  upsert: [TransferUpsertWithWhereUniqueWithoutTransactionInput!]
+}
+
+input TransferUpdateManyWithWhereNestedInput {
+  where: TransferScalarWhereInput!
+  data: TransferUpdateManyDataInput!
+}
+
+input TransferUpdateWithoutTransactionDataInput {
+  stripe_id: String
+  amount: Int
+  currency: String
+  recipient: UserUpdateOneRequiredInput
+}
+
+input TransferUpdateWithWhereUniqueWithoutTransactionInput {
+  where: TransferWhereUniqueInput!
+  data: TransferUpdateWithoutTransactionDataInput!
+}
+
+input TransferUpsertWithWhereUniqueWithoutTransactionInput {
+  where: TransferWhereUniqueInput!
+  update: TransferUpdateWithoutTransactionDataInput!
+  create: TransferCreateWithoutTransactionInput!
+}
+
+input TransferWhereInput {
+  """Logical AND on all given filters."""
+  AND: [TransferWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [TransferWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [TransferWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  stripe_id: String
+
+  """All values that are not equal to given value."""
+  stripe_id_not: String
+
+  """All values that are contained in given list."""
+  stripe_id_in: [String!]
+
+  """All values that are not contained in given list."""
+  stripe_id_not_in: [String!]
+
+  """All values less than the given value."""
+  stripe_id_lt: String
+
+  """All values less than or equal the given value."""
+  stripe_id_lte: String
+
+  """All values greater than the given value."""
+  stripe_id_gt: String
+
+  """All values greater than or equal the given value."""
+  stripe_id_gte: String
+
+  """All values containing the given string."""
+  stripe_id_contains: String
+
+  """All values not containing the given string."""
+  stripe_id_not_contains: String
+
+  """All values starting with the given string."""
+  stripe_id_starts_with: String
+
+  """All values not starting with the given string."""
+  stripe_id_not_starts_with: String
+
+  """All values ending with the given string."""
+  stripe_id_ends_with: String
+
+  """All values not ending with the given string."""
+  stripe_id_not_ends_with: String
+  amount: Int
+
+  """All values that are not equal to given value."""
+  amount_not: Int
+
+  """All values that are contained in given list."""
+  amount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  amount_not_in: [Int!]
+
+  """All values less than the given value."""
+  amount_lt: Int
+
+  """All values less than or equal the given value."""
+  amount_lte: Int
+
+  """All values greater than the given value."""
+  amount_gt: Int
+
+  """All values greater than or equal the given value."""
+  amount_gte: Int
+  currency: String
+
+  """All values that are not equal to given value."""
+  currency_not: String
+
+  """All values that are contained in given list."""
+  currency_in: [String!]
+
+  """All values that are not contained in given list."""
+  currency_not_in: [String!]
+
+  """All values less than the given value."""
+  currency_lt: String
+
+  """All values less than or equal the given value."""
+  currency_lte: String
+
+  """All values greater than the given value."""
+  currency_gt: String
+
+  """All values greater than or equal the given value."""
+  currency_gte: String
+
+  """All values containing the given string."""
+  currency_contains: String
+
+  """All values not containing the given string."""
+  currency_not_contains: String
+
+  """All values starting with the given string."""
+  currency_starts_with: String
+
+  """All values not starting with the given string."""
+  currency_not_starts_with: String
+
+  """All values ending with the given string."""
+  currency_ends_with: String
+
+  """All values not ending with the given string."""
+  currency_not_ends_with: String
+  recipient: UserWhereInput
+  transaction: TransactionWhereInput
+}
+
+input TransferWhereUniqueInput {
+  id: ID
+  stripe_id: String
 }
 
 type User implements Node {
@@ -771,6 +2472,16 @@ input UserCreateInput {
   email: String!
   customer: CustomerCreateOneInput!
   seller: SellerCreateOneInput
+}
+
+input UserCreateManyInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+}
+
+input UserCreateOneInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
 }
 
 """An edge in a connection."""
@@ -799,6 +2510,137 @@ type UserPreviousValues {
   id: ID!
   name: String!
   email: String!
+}
+
+input UserScalarWhereInput {
+  """Logical AND on all given filters."""
+  AND: [UserScalarWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [UserScalarWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [UserScalarWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  name: String
+
+  """All values that are not equal to given value."""
+  name_not: String
+
+  """All values that are contained in given list."""
+  name_in: [String!]
+
+  """All values that are not contained in given list."""
+  name_not_in: [String!]
+
+  """All values less than the given value."""
+  name_lt: String
+
+  """All values less than or equal the given value."""
+  name_lte: String
+
+  """All values greater than the given value."""
+  name_gt: String
+
+  """All values greater than or equal the given value."""
+  name_gte: String
+
+  """All values containing the given string."""
+  name_contains: String
+
+  """All values not containing the given string."""
+  name_not_contains: String
+
+  """All values starting with the given string."""
+  name_starts_with: String
+
+  """All values not starting with the given string."""
+  name_not_starts_with: String
+
+  """All values ending with the given string."""
+  name_ends_with: String
+
+  """All values not ending with the given string."""
+  name_not_ends_with: String
+  email: String
+
+  """All values that are not equal to given value."""
+  email_not: String
+
+  """All values that are contained in given list."""
+  email_in: [String!]
+
+  """All values that are not contained in given list."""
+  email_not_in: [String!]
+
+  """All values less than the given value."""
+  email_lt: String
+
+  """All values less than or equal the given value."""
+  email_lte: String
+
+  """All values greater than the given value."""
+  email_gt: String
+
+  """All values greater than or equal the given value."""
+  email_gte: String
+
+  """All values containing the given string."""
+  email_contains: String
+
+  """All values not containing the given string."""
+  email_not_contains: String
+
+  """All values starting with the given string."""
+  email_starts_with: String
+
+  """All values not starting with the given string."""
+  email_not_starts_with: String
+
+  """All values ending with the given string."""
+  email_ends_with: String
+
+  """All values not ending with the given string."""
+  email_not_ends_with: String
 }
 
 type UserSubscriptionPayload {
@@ -840,6 +2682,13 @@ input UserSubscriptionWhereInput {
   node: UserWhereInput
 }
 
+input UserUpdateDataInput {
+  name: String
+  email: String
+  customer: CustomerUpdateOneRequiredInput
+  seller: SellerUpdateOneInput
+}
+
 input UserUpdateInput {
   name: String
   email: String
@@ -847,9 +2696,54 @@ input UserUpdateInput {
   seller: SellerUpdateOneInput
 }
 
+input UserUpdateManyDataInput {
+  name: String
+  email: String
+}
+
+input UserUpdateManyInput {
+  create: [UserCreateInput!]
+  connect: [UserWhereUniqueInput!]
+  set: [UserWhereUniqueInput!]
+  disconnect: [UserWhereUniqueInput!]
+  delete: [UserWhereUniqueInput!]
+  update: [UserUpdateWithWhereUniqueNestedInput!]
+  updateMany: [UserUpdateManyWithWhereNestedInput!]
+  deleteMany: [UserScalarWhereInput!]
+  upsert: [UserUpsertWithWhereUniqueNestedInput!]
+}
+
 input UserUpdateManyMutationInput {
   name: String
   email: String
+}
+
+input UserUpdateManyWithWhereNestedInput {
+  where: UserScalarWhereInput!
+  data: UserUpdateManyDataInput!
+}
+
+input UserUpdateOneRequiredInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateDataInput
+  upsert: UserUpsertNestedInput
+}
+
+input UserUpdateWithWhereUniqueNestedInput {
+  where: UserWhereUniqueInput!
+  data: UserUpdateDataInput!
+}
+
+input UserUpsertNestedInput {
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
+}
+
+input UserUpsertWithWhereUniqueNestedInput {
+  where: UserWhereUniqueInput!
+  update: UserUpdateDataInput!
+  create: UserCreateInput!
 }
 
 input UserWhereInput {

@@ -1,3 +1,4 @@
+## Users, Customers, Accounts.
 type User {
   id: ID! @unique
   name: String!
@@ -28,4 +29,45 @@ type Seller {
   payouts_enabled: Boolean
   default_payout_currency: String!
   verification_status: SellerVerificationStatus!
+}
+
+## Transaction related objects and relationships.
+type Item {
+  id: ID! @unique
+  price: Int!
+  currency: String!
+  seller: User!
+}
+
+type Transaction {
+  id: ID! @unique
+  stripe_id: String! @unique
+  items: [Item!]!
+  buyer: User! @relation(name: "ItemBuyer")
+  sellers: [User!]! @relation(name: "ItemSellers")
+  amount: Int!
+  amount_refunded: Int! @default(value: 0)
+  presentment_currency: String!
+  settlement_currency: String!
+  exchange_rate: Float
+  stripe_fee: Int!
+  net_amount: Int!
+  transfers: [Transfer!]!
+  comission: Commission!
+}
+
+type Transfer {
+  id: ID! @unique
+  stripe_id: String! @unique
+  recipient: User!
+  transaction: Transaction!
+  amount: Int!
+  currency: String!
+}
+
+type Commission {
+  id: ID! @unique
+  amount: Int!
+  currency: String!
+  transaction: Transaction!
 }
