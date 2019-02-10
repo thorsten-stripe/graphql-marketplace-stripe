@@ -77,13 +77,22 @@ const Mutations = {
     // Retrieve Items and validate that they have the same currency.
     const item_ids = items.map(item => ({ id: item }));
     const item_objects = await ctx.db.query.items(
-      { where: { or: item_ids } },
+      { where: { OR: item_ids } },
       `{ id price currency seller{id} }`
     );
-    return item_objects;
+    const same_currency = item_objects.every(
+      item => item.currency === item_objects[0].currency
+    );
+    if (!same_currency) {
+      throw new Error(
+        `All items must have the same currency to be part of one transaction.`
+      );
+    }
     // Check if they are all from the same buyer (ONE-TO-ONE) or different buyers (ONE-TO-MANY)
     // ONE-TO-ONE: Destination Charge
     // ONE-TO-MANY: Separate charge and multiple transfers
+
+    return item_objects[0];
   }
 };
 
