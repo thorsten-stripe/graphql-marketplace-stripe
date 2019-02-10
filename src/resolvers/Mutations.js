@@ -71,20 +71,7 @@ const Mutations = {
     );
     return user;
   },
-  createItem: forwardTo("db"),
-  async createTransaction(parent, args, ctx, info) {
-    const { buyer, items } = args;
-    // Retrieve Items and validate that they have the same currency.
-    const item_ids = items.map(item => ({ id: item }));
-    const item_objects = await ctx.db.query.items(
-      { where: { or: item_ids } },
-      `{ id price currency seller{id} }`
-    );
-    return item_objects;
-    // Check if they are all from the same buyer (ONE-TO-ONE) or different buyers (ONE-TO-MANY)
-    // ONE-TO-ONE: Destination Charge
-    // ONE-TO-MANY: Separate charge and multiple transfers
-  }
+  createItem: forwardTo("db")
 };
 
 module.exports = Mutations;
