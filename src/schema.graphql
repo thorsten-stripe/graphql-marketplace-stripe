@@ -4,6 +4,7 @@ type Mutation {
   signup(name: String!, email: String!): User!
   becomeSeller(user_id: String!, country: String!, business_name: String): User!
   createItem(data: ItemCreateInput!): Item!
+  createTransaction(buyer: String!, items: [String!]!): Transaction!
 }
 
 type Query {
