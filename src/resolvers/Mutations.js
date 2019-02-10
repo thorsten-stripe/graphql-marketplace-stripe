@@ -1,3 +1,4 @@
+const { forwardTo } = require("prisma-binding");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
 const Mutations = {
@@ -69,7 +70,8 @@ const Mutations = {
       info
     );
     return user;
-  }
+  },
+  createItem: forwardTo("db")
 };
 
 module.exports = Mutations;

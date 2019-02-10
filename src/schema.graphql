@@ -3,8 +3,10 @@
 type Mutation {
   signup(name: String!, email: String!): User!
   becomeSeller(user_id: String!, country: String!, business_name: String): User!
+  createItem(data: ItemCreateInput!): Item!
 }
 
 type Query {
   users: [User]!
+  items(where: ItemWhereInput): [Item]!
 }
