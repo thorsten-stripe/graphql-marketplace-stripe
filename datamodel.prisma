@@ -3,14 +3,16 @@ type User {
   id: ID! @unique
   name: String!
   email: String! @unique
-  customer: Customer!
-  seller: Seller
+  customer: Customer! @relation(name: "Customer", onDelete: CASCADE)
+  seller: Seller @relation(name: "Seller", onDelete: CASCADE)
+  items: [Item] @relation(name: "ItemsByUser", onDelete: CASCADE)
 }
 
 type Customer {
   id: ID! @unique
   stripe_id: String! @unique
   has_open_disputes: Boolean! @default(value: false)
+  user: User! @relation(name: "Customer")
 }
 
 enum SellerVerificationStatus {
@@ -29,6 +31,7 @@ type Seller {
   payouts_enabled: Boolean
   default_payout_currency: String!
   verification_status: SellerVerificationStatus!
+  user: User! @relation(name: "Seller")
 }
 
 ## Transaction related objects and relationships.
@@ -36,7 +39,7 @@ type Item {
   id: ID! @unique
   price: Int!
   currency: String!
-  seller: User!
+  seller: User! @relation(name: "ItemsByUser")
 }
 
 type Transaction {
@@ -68,6 +71,7 @@ type Transfer {
 type Commission {
   id: ID! @unique
   amount: Int!
+  net_amount: Int!
   currency: String!
   transaction: Transaction!
 }

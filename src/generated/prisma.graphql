@@ -1,5 +1,5 @@
 # source: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
-# timestamp: Sun Feb 10 2019 11:25:14 GMT+0100 (Central European Standard Time)
+# timestamp: Sun Feb 10 2019 19:57:33 GMT+0100 (Central European Standard Time)
 
 type AggregateCommission {
   count: Int!
@@ -37,6 +37,7 @@ type BatchPayload {
 type Commission implements Node {
   id: ID!
   amount: Int!
+  net_amount: Int!
   currency: String!
   transaction: Transaction!
 }
@@ -53,6 +54,7 @@ type CommissionConnection {
 
 input CommissionCreateInput {
   amount: Int!
+  net_amount: Int!
   currency: String!
   transaction: TransactionCreateOneWithoutComissionInput!
 }
@@ -64,6 +66,7 @@ input CommissionCreateOneWithoutTransactionInput {
 
 input CommissionCreateWithoutTransactionInput {
   amount: Int!
+  net_amount: Int!
   currency: String!
 }
 
@@ -81,6 +84,8 @@ enum CommissionOrderByInput {
   id_DESC
   amount_ASC
   amount_DESC
+  net_amount_ASC
+  net_amount_DESC
   currency_ASC
   currency_DESC
   updatedAt_ASC
@@ -92,6 +97,7 @@ enum CommissionOrderByInput {
 type CommissionPreviousValues {
   id: ID!
   amount: Int!
+  net_amount: Int!
   currency: String!
 }
 
@@ -136,12 +142,14 @@ input CommissionSubscriptionWhereInput {
 
 input CommissionUpdateInput {
   amount: Int
+  net_amount: Int
   currency: String
   transaction: TransactionUpdateOneRequiredWithoutComissionInput
 }
 
 input CommissionUpdateManyMutationInput {
   amount: Int
+  net_amount: Int
   currency: String
 }
 
@@ -154,6 +162,7 @@ input CommissionUpdateOneRequiredWithoutTransactionInput {
 
 input CommissionUpdateWithoutTransactionDataInput {
   amount: Int
+  net_amount: Int
   currency: String
 }
 
@@ -233,6 +242,28 @@ input CommissionWhereInput {
 
   """All values greater than or equal the given value."""
   amount_gte: Int
+  net_amount: Int
+
+  """All values that are not equal to given value."""
+  net_amount_not: Int
+
+  """All values that are contained in given list."""
+  net_amount_in: [Int!]
+
+  """All values that are not contained in given list."""
+  net_amount_not_in: [Int!]
+
+  """All values less than the given value."""
+  net_amount_lt: Int
+
+  """All values less than or equal the given value."""
+  net_amount_lte: Int
+
+  """All values greater than the given value."""
+  net_amount_gt: Int
+
+  """All values greater than or equal the given value."""
+  net_amount_gte: Int
   currency: String
 
   """All values that are not equal to given value."""
@@ -284,6 +315,7 @@ type Customer implements Node {
   id: ID!
   stripe_id: String!
   has_open_disputes: Boolean!
+  user: User!
 }
 
 """A connection to a list of items."""
@@ -299,11 +331,17 @@ type CustomerConnection {
 input CustomerCreateInput {
   stripe_id: String!
   has_open_disputes: Boolean
+  user: UserCreateOneWithoutCustomerInput!
 }
 
-input CustomerCreateOneInput {
-  create: CustomerCreateInput
+input CustomerCreateOneWithoutUserInput {
+  create: CustomerCreateWithoutUserInput
   connect: CustomerWhereUniqueInput
+}
+
+input CustomerCreateWithoutUserInput {
+  stripe_id: String!
+  has_open_disputes: Boolean
 }
 
 """An edge in a connection."""
@@ -373,14 +411,10 @@ input CustomerSubscriptionWhereInput {
   node: CustomerWhereInput
 }
 
-input CustomerUpdateDataInput {
-  stripe_id: String
-  has_open_disputes: Boolean
-}
-
 input CustomerUpdateInput {
   stripe_id: String
   has_open_disputes: Boolean
+  user: UserUpdateOneRequiredWithoutCustomerInput
 }
 
 input CustomerUpdateManyMutationInput {
@@ -388,16 +422,21 @@ input CustomerUpdateManyMutationInput {
   has_open_disputes: Boolean
 }
 
-input CustomerUpdateOneRequiredInput {
-  create: CustomerCreateInput
+input CustomerUpdateOneRequiredWithoutUserInput {
+  create: CustomerCreateWithoutUserInput
   connect: CustomerWhereUniqueInput
-  update: CustomerUpdateDataInput
-  upsert: CustomerUpsertNestedInput
+  update: CustomerUpdateWithoutUserDataInput
+  upsert: CustomerUpsertWithoutUserInput
 }
 
-input CustomerUpsertNestedInput {
-  update: CustomerUpdateDataInput!
-  create: CustomerCreateInput!
+input CustomerUpdateWithoutUserDataInput {
+  stripe_id: String
+  has_open_disputes: Boolean
+}
+
+input CustomerUpsertWithoutUserInput {
+  update: CustomerUpdateWithoutUserDataInput!
+  create: CustomerCreateWithoutUserInput!
 }
 
 input CustomerWhereInput {
@@ -493,6 +532,7 @@ input CustomerWhereInput {
 
   """All values that are not equal to given value."""
   has_open_disputes_not: Boolean
+  user: UserWhereInput
 }
 
 input CustomerWhereUniqueInput {
@@ -520,12 +560,22 @@ type ItemConnection {
 input ItemCreateInput {
   price: Int!
   currency: String!
-  seller: UserCreateOneInput!
+  seller: UserCreateOneWithoutItemsInput!
 }
 
 input ItemCreateManyInput {
   create: [ItemCreateInput!]
   connect: [ItemWhereUniqueInput!]
+}
+
+input ItemCreateManyWithoutSellerInput {
+  create: [ItemCreateWithoutSellerInput!]
+  connect: [ItemWhereUniqueInput!]
+}
+
+input ItemCreateWithoutSellerInput {
+  price: Int!
+  currency: String!
 }
 
 """An edge in a connection."""
@@ -711,13 +761,13 @@ input ItemSubscriptionWhereInput {
 input ItemUpdateDataInput {
   price: Int
   currency: String
-  seller: UserUpdateOneRequiredInput
+  seller: UserUpdateOneRequiredWithoutItemsInput
 }
 
 input ItemUpdateInput {
   price: Int
   currency: String
-  seller: UserUpdateOneRequiredInput
+  seller: UserUpdateOneRequiredWithoutItemsInput
 }
 
 input ItemUpdateManyDataInput {
@@ -742,9 +792,26 @@ input ItemUpdateManyMutationInput {
   currency: String
 }
 
+input ItemUpdateManyWithoutSellerInput {
+  create: [ItemCreateWithoutSellerInput!]
+  connect: [ItemWhereUniqueInput!]
+  set: [ItemWhereUniqueInput!]
+  disconnect: [ItemWhereUniqueInput!]
+  delete: [ItemWhereUniqueInput!]
+  update: [ItemUpdateWithWhereUniqueWithoutSellerInput!]
+  updateMany: [ItemUpdateManyWithWhereNestedInput!]
+  deleteMany: [ItemScalarWhereInput!]
+  upsert: [ItemUpsertWithWhereUniqueWithoutSellerInput!]
+}
+
 input ItemUpdateManyWithWhereNestedInput {
   where: ItemScalarWhereInput!
   data: ItemUpdateManyDataInput!
+}
+
+input ItemUpdateWithoutSellerDataInput {
+  price: Int
+  currency: String
 }
 
 input ItemUpdateWithWhereUniqueNestedInput {
@@ -752,10 +819,21 @@ input ItemUpdateWithWhereUniqueNestedInput {
   data: ItemUpdateDataInput!
 }
 
+input ItemUpdateWithWhereUniqueWithoutSellerInput {
+  where: ItemWhereUniqueInput!
+  data: ItemUpdateWithoutSellerDataInput!
+}
+
 input ItemUpsertWithWhereUniqueNestedInput {
   where: ItemWhereUniqueInput!
   update: ItemUpdateDataInput!
   create: ItemCreateInput!
+}
+
+input ItemUpsertWithWhereUniqueWithoutSellerInput {
+  where: ItemWhereUniqueInput!
+  update: ItemUpdateWithoutSellerDataInput!
+  create: ItemCreateWithoutSellerInput!
 }
 
 input ItemWhereInput {
@@ -883,47 +961,47 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
+  createCustomer(data: CustomerCreateInput!): Customer!
+  createSeller(data: SellerCreateInput!): Seller!
   createTransaction(data: TransactionCreateInput!): Transaction!
   createTransfer(data: TransferCreateInput!): Transfer!
   createCommission(data: CommissionCreateInput!): Commission!
-  createSeller(data: SellerCreateInput!): Seller!
   createItem(data: ItemCreateInput!): Item!
-  createCustomer(data: CustomerCreateInput!): Customer!
   createUser(data: UserCreateInput!): User!
+  updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer
+  updateSeller(data: SellerUpdateInput!, where: SellerWhereUniqueInput!): Seller
   updateTransaction(data: TransactionUpdateInput!, where: TransactionWhereUniqueInput!): Transaction
   updateTransfer(data: TransferUpdateInput!, where: TransferWhereUniqueInput!): Transfer
   updateCommission(data: CommissionUpdateInput!, where: CommissionWhereUniqueInput!): Commission
-  updateSeller(data: SellerUpdateInput!, where: SellerWhereUniqueInput!): Seller
   updateItem(data: ItemUpdateInput!, where: ItemWhereUniqueInput!): Item
-  updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
+  deleteCustomer(where: CustomerWhereUniqueInput!): Customer
+  deleteSeller(where: SellerWhereUniqueInput!): Seller
   deleteTransaction(where: TransactionWhereUniqueInput!): Transaction
   deleteTransfer(where: TransferWhereUniqueInput!): Transfer
   deleteCommission(where: CommissionWhereUniqueInput!): Commission
-  deleteSeller(where: SellerWhereUniqueInput!): Seller
   deleteItem(where: ItemWhereUniqueInput!): Item
-  deleteCustomer(where: CustomerWhereUniqueInput!): Customer
   deleteUser(where: UserWhereUniqueInput!): User
+  upsertCustomer(where: CustomerWhereUniqueInput!, create: CustomerCreateInput!, update: CustomerUpdateInput!): Customer!
+  upsertSeller(where: SellerWhereUniqueInput!, create: SellerCreateInput!, update: SellerUpdateInput!): Seller!
   upsertTransaction(where: TransactionWhereUniqueInput!, create: TransactionCreateInput!, update: TransactionUpdateInput!): Transaction!
   upsertTransfer(where: TransferWhereUniqueInput!, create: TransferCreateInput!, update: TransferUpdateInput!): Transfer!
   upsertCommission(where: CommissionWhereUniqueInput!, create: CommissionCreateInput!, update: CommissionUpdateInput!): Commission!
-  upsertSeller(where: SellerWhereUniqueInput!, create: SellerCreateInput!, update: SellerUpdateInput!): Seller!
   upsertItem(where: ItemWhereUniqueInput!, create: ItemCreateInput!, update: ItemUpdateInput!): Item!
-  upsertCustomer(where: CustomerWhereUniqueInput!, create: CustomerCreateInput!, update: CustomerUpdateInput!): Customer!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
+  updateManyCustomers(data: CustomerUpdateManyMutationInput!, where: CustomerWhereInput): BatchPayload!
+  updateManySellers(data: SellerUpdateManyMutationInput!, where: SellerWhereInput): BatchPayload!
   updateManyTransactions(data: TransactionUpdateManyMutationInput!, where: TransactionWhereInput): BatchPayload!
   updateManyTransfers(data: TransferUpdateManyMutationInput!, where: TransferWhereInput): BatchPayload!
   updateManyCommissions(data: CommissionUpdateManyMutationInput!, where: CommissionWhereInput): BatchPayload!
-  updateManySellers(data: SellerUpdateManyMutationInput!, where: SellerWhereInput): BatchPayload!
   updateManyItems(data: ItemUpdateManyMutationInput!, where: ItemWhereInput): BatchPayload!
-  updateManyCustomers(data: CustomerUpdateManyMutationInput!, where: CustomerWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
+  deleteManyCustomers(where: CustomerWhereInput): BatchPayload!
+  deleteManySellers(where: SellerWhereInput): BatchPayload!
   deleteManyTransactions(where: TransactionWhereInput): BatchPayload!
   deleteManyTransfers(where: TransferWhereInput): BatchPayload!
   deleteManyCommissions(where: CommissionWhereInput): BatchPayload!
-  deleteManySellers(where: SellerWhereInput): BatchPayload!
   deleteManyItems(where: ItemWhereInput): BatchPayload!
-  deleteManyCustomers(where: CustomerWhereInput): BatchPayload!
   deleteManyUsers(where: UserWhereInput): BatchPayload!
 }
 
@@ -955,26 +1033,26 @@ type PageInfo {
 }
 
 type Query {
+  customers(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Customer]!
+  sellers(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Seller]!
   transactions(where: TransactionWhereInput, orderBy: TransactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Transaction]!
   transfers(where: TransferWhereInput, orderBy: TransferOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Transfer]!
   commissions(where: CommissionWhereInput, orderBy: CommissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Commission]!
-  sellers(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Seller]!
   items(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Item]!
-  customers(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Customer]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+  customer(where: CustomerWhereUniqueInput!): Customer
+  seller(where: SellerWhereUniqueInput!): Seller
   transaction(where: TransactionWhereUniqueInput!): Transaction
   transfer(where: TransferWhereUniqueInput!): Transfer
   commission(where: CommissionWhereUniqueInput!): Commission
-  seller(where: SellerWhereUniqueInput!): Seller
   item(where: ItemWhereUniqueInput!): Item
-  customer(where: CustomerWhereUniqueInput!): Customer
   user(where: UserWhereUniqueInput!): User
+  customersConnection(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CustomerConnection!
+  sellersConnection(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SellerConnection!
   transactionsConnection(where: TransactionWhereInput, orderBy: TransactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TransactionConnection!
   transfersConnection(where: TransferWhereInput, orderBy: TransferOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TransferConnection!
   commissionsConnection(where: CommissionWhereInput, orderBy: CommissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CommissionConnection!
-  sellersConnection(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SellerConnection!
   itemsConnection(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ItemConnection!
-  customersConnection(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CustomerConnection!
   usersConnection(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): UserConnection!
 
   """Fetches an object given its ID"""
@@ -994,6 +1072,7 @@ type Seller implements Node {
   payouts_enabled: Boolean
   default_payout_currency: String!
   verification_status: SellerVerificationStatus!
+  user: User!
 }
 
 """A connection to a list of items."""
@@ -1015,11 +1094,23 @@ input SellerCreateInput {
   payouts_enabled: Boolean
   default_payout_currency: String!
   verification_status: SellerVerificationStatus!
+  user: UserCreateOneWithoutSellerInput!
 }
 
-input SellerCreateOneInput {
-  create: SellerCreateInput
+input SellerCreateOneWithoutUserInput {
+  create: SellerCreateWithoutUserInput
   connect: SellerWhereUniqueInput
+}
+
+input SellerCreateWithoutUserInput {
+  stripe_id: String!
+  country: String!
+  commission_percentage: Int
+  business_name: String
+  charges_enabled: Boolean
+  payouts_enabled: Boolean
+  default_payout_currency: String!
+  verification_status: SellerVerificationStatus!
 }
 
 """An edge in a connection."""
@@ -1107,17 +1198,6 @@ input SellerSubscriptionWhereInput {
   node: SellerWhereInput
 }
 
-input SellerUpdateDataInput {
-  stripe_id: String
-  country: String
-  commission_percentage: Int
-  business_name: String
-  charges_enabled: Boolean
-  payouts_enabled: Boolean
-  default_payout_currency: String
-  verification_status: SellerVerificationStatus
-}
-
 input SellerUpdateInput {
   stripe_id: String
   country: String
@@ -1127,6 +1207,7 @@ input SellerUpdateInput {
   payouts_enabled: Boolean
   default_payout_currency: String
   verification_status: SellerVerificationStatus
+  user: UserUpdateOneRequiredWithoutSellerInput
 }
 
 input SellerUpdateManyMutationInput {
@@ -1140,18 +1221,29 @@ input SellerUpdateManyMutationInput {
   verification_status: SellerVerificationStatus
 }
 
-input SellerUpdateOneInput {
-  create: SellerCreateInput
+input SellerUpdateOneWithoutUserInput {
+  create: SellerCreateWithoutUserInput
   connect: SellerWhereUniqueInput
   disconnect: Boolean
   delete: Boolean
-  update: SellerUpdateDataInput
-  upsert: SellerUpsertNestedInput
+  update: SellerUpdateWithoutUserDataInput
+  upsert: SellerUpsertWithoutUserInput
 }
 
-input SellerUpsertNestedInput {
-  update: SellerUpdateDataInput!
-  create: SellerCreateInput!
+input SellerUpdateWithoutUserDataInput {
+  stripe_id: String
+  country: String
+  commission_percentage: Int
+  business_name: String
+  charges_enabled: Boolean
+  payouts_enabled: Boolean
+  default_payout_currency: String
+  verification_status: SellerVerificationStatus
+}
+
+input SellerUpsertWithoutUserInput {
+  update: SellerUpdateWithoutUserDataInput!
+  create: SellerCreateWithoutUserInput!
 }
 
 enum SellerVerificationStatus {
@@ -1409,6 +1501,7 @@ input SellerWhereInput {
 
   """All values that are not contained in given list."""
   verification_status_not_in: [SellerVerificationStatus!]
+  user: UserWhereInput
 }
 
 input SellerWhereUniqueInput {
@@ -1417,12 +1510,12 @@ input SellerWhereUniqueInput {
 }
 
 type Subscription {
+  customer(where: CustomerSubscriptionWhereInput): CustomerSubscriptionPayload
+  seller(where: SellerSubscriptionWhereInput): SellerSubscriptionPayload
   transaction(where: TransactionSubscriptionWhereInput): TransactionSubscriptionPayload
   transfer(where: TransferSubscriptionWhereInput): TransferSubscriptionPayload
   commission(where: CommissionSubscriptionWhereInput): CommissionSubscriptionPayload
-  seller(where: SellerSubscriptionWhereInput): SellerSubscriptionPayload
   item(where: ItemSubscriptionWhereInput): ItemSubscriptionPayload
-  customer(where: CustomerSubscriptionWhereInput): CustomerSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
 }
 
@@ -2455,6 +2548,7 @@ type User implements Node {
   email: String!
   customer: Customer!
   seller: Seller
+  items(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Item!]
 }
 
 """A connection to a list of items."""
@@ -2470,8 +2564,9 @@ type UserConnection {
 input UserCreateInput {
   name: String!
   email: String!
-  customer: CustomerCreateOneInput!
-  seller: SellerCreateOneInput
+  customer: CustomerCreateOneWithoutUserInput!
+  seller: SellerCreateOneWithoutUserInput
+  items: ItemCreateManyWithoutSellerInput
 }
 
 input UserCreateManyInput {
@@ -2482,6 +2577,42 @@ input UserCreateManyInput {
 input UserCreateOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutCustomerInput {
+  create: UserCreateWithoutCustomerInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutItemsInput {
+  create: UserCreateWithoutItemsInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateOneWithoutSellerInput {
+  create: UserCreateWithoutSellerInput
+  connect: UserWhereUniqueInput
+}
+
+input UserCreateWithoutCustomerInput {
+  name: String!
+  email: String!
+  seller: SellerCreateOneWithoutUserInput
+  items: ItemCreateManyWithoutSellerInput
+}
+
+input UserCreateWithoutItemsInput {
+  name: String!
+  email: String!
+  customer: CustomerCreateOneWithoutUserInput!
+  seller: SellerCreateOneWithoutUserInput
+}
+
+input UserCreateWithoutSellerInput {
+  name: String!
+  email: String!
+  customer: CustomerCreateOneWithoutUserInput!
+  items: ItemCreateManyWithoutSellerInput
 }
 
 """An edge in a connection."""
@@ -2685,15 +2816,17 @@ input UserSubscriptionWhereInput {
 input UserUpdateDataInput {
   name: String
   email: String
-  customer: CustomerUpdateOneRequiredInput
-  seller: SellerUpdateOneInput
+  customer: CustomerUpdateOneRequiredWithoutUserInput
+  seller: SellerUpdateOneWithoutUserInput
+  items: ItemUpdateManyWithoutSellerInput
 }
 
 input UserUpdateInput {
   name: String
   email: String
-  customer: CustomerUpdateOneRequiredInput
-  seller: SellerUpdateOneInput
+  customer: CustomerUpdateOneRequiredWithoutUserInput
+  seller: SellerUpdateOneWithoutUserInput
+  items: ItemUpdateManyWithoutSellerInput
 }
 
 input UserUpdateManyDataInput {
@@ -2730,6 +2863,48 @@ input UserUpdateOneRequiredInput {
   upsert: UserUpsertNestedInput
 }
 
+input UserUpdateOneRequiredWithoutCustomerInput {
+  create: UserCreateWithoutCustomerInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutCustomerDataInput
+  upsert: UserUpsertWithoutCustomerInput
+}
+
+input UserUpdateOneRequiredWithoutItemsInput {
+  create: UserCreateWithoutItemsInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutItemsDataInput
+  upsert: UserUpsertWithoutItemsInput
+}
+
+input UserUpdateOneRequiredWithoutSellerInput {
+  create: UserCreateWithoutSellerInput
+  connect: UserWhereUniqueInput
+  update: UserUpdateWithoutSellerDataInput
+  upsert: UserUpsertWithoutSellerInput
+}
+
+input UserUpdateWithoutCustomerDataInput {
+  name: String
+  email: String
+  seller: SellerUpdateOneWithoutUserInput
+  items: ItemUpdateManyWithoutSellerInput
+}
+
+input UserUpdateWithoutItemsDataInput {
+  name: String
+  email: String
+  customer: CustomerUpdateOneRequiredWithoutUserInput
+  seller: SellerUpdateOneWithoutUserInput
+}
+
+input UserUpdateWithoutSellerDataInput {
+  name: String
+  email: String
+  customer: CustomerUpdateOneRequiredWithoutUserInput
+  items: ItemUpdateManyWithoutSellerInput
+}
+
 input UserUpdateWithWhereUniqueNestedInput {
   where: UserWhereUniqueInput!
   data: UserUpdateDataInput!
@@ -2738,6 +2913,21 @@ input UserUpdateWithWhereUniqueNestedInput {
 input UserUpsertNestedInput {
   update: UserUpdateDataInput!
   create: UserCreateInput!
+}
+
+input UserUpsertWithoutCustomerInput {
+  update: UserUpdateWithoutCustomerDataInput!
+  create: UserCreateWithoutCustomerInput!
+}
+
+input UserUpsertWithoutItemsInput {
+  update: UserUpdateWithoutItemsDataInput!
+  create: UserCreateWithoutItemsInput!
+}
+
+input UserUpsertWithoutSellerInput {
+  update: UserUpdateWithoutSellerDataInput!
+  create: UserCreateWithoutSellerInput!
 }
 
 input UserUpsertWithWhereUniqueNestedInput {
@@ -2877,6 +3067,9 @@ input UserWhereInput {
   email_not_ends_with: String
   customer: CustomerWhereInput
   seller: SellerWhereInput
+  items_every: ItemWhereInput
+  items_some: ItemWhereInput
+  items_none: ItemWhereInput
 }
 
 input UserWhereUniqueInput {

@@ -78,7 +78,7 @@ const Mutations = {
     const item_ids = items.map(item => ({ id: item }));
     const item_objects = await ctx.db.query.items(
       { where: { OR: item_ids } },
-      `{ id price currency seller{id} }`
+      `{ id price currency seller{id seller {commission_percentage stripe_id}}}`
     );
     const same_currency = item_objects.every(
       item => item.currency === item_objects[0].currency
@@ -88,11 +88,98 @@ const Mutations = {
         `All items must have the same currency to be part of one transaction.`
       );
     }
-    // Check if they are all from the same buyer (ONE-TO-ONE) or different buyers (ONE-TO-MANY)
-    // ONE-TO-ONE: Destination Charge
-    // ONE-TO-MANY: Separate charge and multiple transfers
 
-    return item_objects[0];
+    // Check if they are all from the same seller (ONE-TO-ONE) or different sellers (ONE-TO-MANY)
+    const one_to_one = item_objects.every(
+      item => item.seller.id === item_objects[0].seller.id
+    );
+
+    // Define global transaction variables.
+    let transaction = { id: "testitest" }; // TODO: delete mock data
+    const transaction_amount = item_objects.reduce(
+      (total, item) => total + item.price,
+      0
+    );
+    let commission_amount;
+    // Retrieve buyer customer details.
+    const { email, customer } = await ctx.db.query.user(
+      { where: { id: buyer } },
+      `{ email customer{stripe_id} }`
+    );
+
+    if (one_to_one) {
+      // ONE-TO-ONE: Destination Charge
+      const seller = item_objects[0].seller.seller;
+      commission_amount = Math.round(
+        (transaction_amount * seller.commission_percentage) / 100
+      );
+      const charge = await stripe.charges.create({
+        amount: transaction_amount,
+        currency: item_objects[0].currency,
+        customer: customer.stripe_id,
+        description: `Charge for ${email}`,
+        destination: {
+          account: seller.stripe_id,
+          amount: transaction_amount - commission_amount
+        },
+        metadata: {
+          buyer_user_id: buyer,
+          seller_user_id: item_objects[0].seller.id,
+          commission_amount,
+          commission_percentage: seller.commission_percentage
+        },
+        expand: ["balance_transaction", "transfer"]
+      });
+      // Persist transaction, transfer, and commission details in database.
+      transaction = await ctx.db.mutation.createTransaction(
+        {
+          data: {
+            stripe_id: charge.id,
+            items: {
+              connect: item_ids
+            },
+            buyer: { connect: { id: buyer } },
+            sellers: {
+              connect: [{ id: item_objects[0].seller.id }]
+            },
+            amount: charge.balance_transaction.amount,
+            presentment_currency: charge.currency,
+            settlement_currency: charge.balance_transaction.currency,
+            exchange_rate: charge.balance_transaction.exchange_rate,
+            stripe_fee: charge.balance_transaction.fee,
+            net_amount: charge.balance_transaction.net,
+            transfers: {
+              create: [
+                {
+                  stripe_id: charge.transfer.id,
+                  amount: charge.transfer.amount,
+                  currency: charge.transfer.currency,
+                  recipient: {
+                    connect: { id: item_objects[0].seller.id }
+                  }
+                }
+              ]
+            },
+            comission: {
+              create: {
+                amount:
+                  charge.balance_transaction.amount - charge.transfer.amount,
+                net_amount:
+                  charge.balance_transaction.amount -
+                  charge.transfer.amount -
+                  charge.balance_transaction.fee,
+                currency: charge.balance_transaction.currency
+              }
+            }
+          }
+        },
+        info
+      );
+    } else {
+      // ONE-TO-MANY: Separate charge and multiple transfers
+    }
+
+    return transaction;
   }
 };
 
