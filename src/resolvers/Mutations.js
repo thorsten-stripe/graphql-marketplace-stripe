@@ -78,7 +78,7 @@ const Mutations = {
     const item_ids = items.map(item => ({ id: item }));
     const item_objects = await ctx.db.query.items(
       { where: { OR: item_ids } },
-      `{ id price currency seller{id seller {commission_percentage stripe_id}}}`
+      `{ id price currency seller{id seller {commission_percentage stripe_id}} transaction{id} }`
     );
     const same_currency = item_objects.every(
       item => item.currency === item_objects[0].currency
@@ -86,6 +86,18 @@ const Mutations = {
     if (!same_currency) {
       throw new Error(
         `All items must have the same currency to be part of one transaction.`
+      );
+    }
+    // Check if item has already been sold.
+    const sold_items = [];
+    item_objects.forEach(item => {
+      if (item.transaction) {
+        sold_items.push(item.id);
+      }
+    });
+    if (sold_items.length) {
+      throw new Error(
+        `The following items have already been sold: ${sold_items.toString()}.`
       );
     }
 

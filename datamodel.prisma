@@ -40,12 +40,13 @@ type Item {
   price: Int!
   currency: String!
   seller: User! @relation(name: "ItemsByUser")
+  transaction: Transaction @relation(name: "ItemInTransaction")
 }
 
 type Transaction {
   id: ID! @unique
   stripe_id: String! @unique
-  items: [Item!]!
+  items: [Item!]! @relation(name: "ItemInTransaction")
   buyer: User! @relation(name: "ItemBuyer")
   sellers: [User!]! @relation(name: "ItemSellers")
   amount: Int!
