@@ -80,8 +80,9 @@ const Mutations = {
       { where: { OR: item_ids } },
       `{ id price currency seller{id seller {commission_percentage stripe_id}} transaction{id} }`
     );
+    const currency = item_objects[0].currency;
     const same_currency = item_objects.every(
-      item => item.currency === item_objects[0].currency
+      item => item.currency === currency
     );
     if (!same_currency) {
       throw new Error(
@@ -127,7 +128,7 @@ const Mutations = {
       );
       const charge = await stripe.charges.create({
         amount: transaction_amount,
-        currency: item_objects[0].currency,
+        currency: currency,
         customer: customer.stripe_id,
         description: `Charge for ${email}`,
         destination: {
@@ -189,6 +190,87 @@ const Mutations = {
       );
     } else {
       // ONE-TO-MANY: Separate charge and multiple transfers
+      const commission_amount = item_objects.reduce(
+        (total, item) =>
+          total +
+          Math.round(
+            (item.price * item.seller.seller.commission_percentage) / 100
+          ),
+        0
+      );
+      // We need a transfer group to link the charges and transfers together
+      const transfer_group = `${Date.now()}-${buyer}`;
+      // Create the charge first. Once successful, create the transfers.
+      const charge = await stripe.charges.create({
+        amount: transaction_amount,
+        currency: currency,
+        customer: customer.stripe_id,
+        description: `Charge for ${email}`,
+        transfer_group,
+        metadata: {
+          buyer_user_id: buyer,
+          seller_user_ids: JSON.stringify(
+            item_objects.map(item => item.seller.id)
+          ),
+          commission_amount
+        },
+        expand: ["balance_transaction"]
+      });
+      // Create the transfers.
+      const transfers = [];
+      for (const item of item_objects) {
+        const seller = item.seller.seller;
+        const commission_amount = Math.round(
+          (transaction_amount * seller.commission_percentage) / 100
+        );
+        const stripe_transfer = await stripe.transfers.create({
+          amount: item.price - commission_amount,
+          currency: item.currency,
+          destination: seller.stripe_id,
+          transfer_group,
+          source_transaction: charge.id
+        });
+        transfers.push({
+          stripe_id: stripe_transfer.id,
+          amount: stripe_transfer.amount,
+          currency: stripe_transfer.currency,
+          recipient: {
+            connect: { id: item.seller.id }
+          }
+        });
+      }
+      // Persist transaction, transfer, and commission details in database.
+      transaction = await ctx.db.mutation.createTransaction(
+        {
+          data: {
+            stripe_id: charge.id,
+            items: {
+              connect: item_ids
+            },
+            buyer: { connect: { id: buyer } },
+            sellers: {
+              connect: item_objects.map(item => ({ id: item.seller.id }))
+            },
+            amount: charge.balance_transaction.amount,
+            presentment_currency: charge.currency,
+            settlement_currency: charge.balance_transaction.currency,
+            exchange_rate: charge.balance_transaction.exchange_rate,
+            stripe_fee: charge.balance_transaction.fee,
+            net_amount: charge.balance_transaction.net,
+            transfers: {
+              create: transfers
+            },
+            comission: {
+              create: {
+                amount: commission_amount,
+                net_amount: commission_amount - charge.balance_transaction.fee,
+                currency: charge.balance_transaction.currency
+              }
+            }
+          }
+        },
+        info
+      );
     }
 
     return transaction;
