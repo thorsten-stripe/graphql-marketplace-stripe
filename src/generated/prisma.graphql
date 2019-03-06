@@ -1,11 +1,11 @@
 # source: https://eu1.prisma.sh/thor-stripe/graphql-extend-rest/dev
-# timestamp: Sun Feb 10 2019 20:54:39 GMT+0100 (Central European Standard Time)
+# timestamp: Wed Mar 06 2019 11:36:04 GMT+0800 (Singapore Standard Time)
 
-type AggregateCommission {
+type AggregateBuyer {
   count: Int!
 }
 
-type AggregateCustomer {
+type AggregateCommission {
   count: Int!
 }
 
@@ -32,6 +32,235 @@ type AggregateUser {
 type BatchPayload {
   """The number of nodes that have been affected by the Batch operation."""
   count: Long!
+}
+
+type Buyer implements Node {
+  id: ID!
+  stripe_id: String!
+  has_open_disputes: Boolean!
+  user: User!
+}
+
+"""A connection to a list of items."""
+type BuyerConnection {
+  """Information to aid in pagination."""
+  pageInfo: PageInfo!
+
+  """A list of edges."""
+  edges: [BuyerEdge]!
+  aggregate: AggregateBuyer!
+}
+
+input BuyerCreateInput {
+  stripe_id: String!
+  has_open_disputes: Boolean
+  user: UserCreateOneWithoutBuyerInput!
+}
+
+input BuyerCreateOneWithoutUserInput {
+  create: BuyerCreateWithoutUserInput
+  connect: BuyerWhereUniqueInput
+}
+
+input BuyerCreateWithoutUserInput {
+  stripe_id: String!
+  has_open_disputes: Boolean
+}
+
+"""An edge in a connection."""
+type BuyerEdge {
+  """The item at the end of the edge."""
+  node: Buyer!
+
+  """A cursor for use in pagination."""
+  cursor: String!
+}
+
+enum BuyerOrderByInput {
+  id_ASC
+  id_DESC
+  stripe_id_ASC
+  stripe_id_DESC
+  has_open_disputes_ASC
+  has_open_disputes_DESC
+  updatedAt_ASC
+  updatedAt_DESC
+  createdAt_ASC
+  createdAt_DESC
+}
+
+type BuyerPreviousValues {
+  id: ID!
+  stripe_id: String!
+  has_open_disputes: Boolean!
+}
+
+type BuyerSubscriptionPayload {
+  mutation: MutationType!
+  node: Buyer
+  updatedFields: [String!]
+  previousValues: BuyerPreviousValues
+}
+
+input BuyerSubscriptionWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BuyerSubscriptionWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BuyerSubscriptionWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BuyerSubscriptionWhereInput!]
+
+  """
+  The subscription event gets dispatched when it's listed in mutation_in
+  """
+  mutation_in: [MutationType!]
+
+  """
+  The subscription event gets only dispatched when one of the updated fields names is included in this list
+  """
+  updatedFields_contains: String
+
+  """
+  The subscription event gets only dispatched when all of the field names included in this list have been updated
+  """
+  updatedFields_contains_every: [String!]
+
+  """
+  The subscription event gets only dispatched when some of the field names included in this list have been updated
+  """
+  updatedFields_contains_some: [String!]
+  node: BuyerWhereInput
+}
+
+input BuyerUpdateInput {
+  stripe_id: String
+  has_open_disputes: Boolean
+  user: UserUpdateOneRequiredWithoutBuyerInput
+}
+
+input BuyerUpdateManyMutationInput {
+  stripe_id: String
+  has_open_disputes: Boolean
+}
+
+input BuyerUpdateOneRequiredWithoutUserInput {
+  create: BuyerCreateWithoutUserInput
+  connect: BuyerWhereUniqueInput
+  update: BuyerUpdateWithoutUserDataInput
+  upsert: BuyerUpsertWithoutUserInput
+}
+
+input BuyerUpdateWithoutUserDataInput {
+  stripe_id: String
+  has_open_disputes: Boolean
+}
+
+input BuyerUpsertWithoutUserInput {
+  update: BuyerUpdateWithoutUserDataInput!
+  create: BuyerCreateWithoutUserInput!
+}
+
+input BuyerWhereInput {
+  """Logical AND on all given filters."""
+  AND: [BuyerWhereInput!]
+
+  """Logical OR on all given filters."""
+  OR: [BuyerWhereInput!]
+
+  """Logical NOT on all given filters combined by AND."""
+  NOT: [BuyerWhereInput!]
+  id: ID
+
+  """All values that are not equal to given value."""
+  id_not: ID
+
+  """All values that are contained in given list."""
+  id_in: [ID!]
+
+  """All values that are not contained in given list."""
+  id_not_in: [ID!]
+
+  """All values less than the given value."""
+  id_lt: ID
+
+  """All values less than or equal the given value."""
+  id_lte: ID
+
+  """All values greater than the given value."""
+  id_gt: ID
+
+  """All values greater than or equal the given value."""
+  id_gte: ID
+
+  """All values containing the given string."""
+  id_contains: ID
+
+  """All values not containing the given string."""
+  id_not_contains: ID
+
+  """All values starting with the given string."""
+  id_starts_with: ID
+
+  """All values not starting with the given string."""
+  id_not_starts_with: ID
+
+  """All values ending with the given string."""
+  id_ends_with: ID
+
+  """All values not ending with the given string."""
+  id_not_ends_with: ID
+  stripe_id: String
+
+  """All values that are not equal to given value."""
+  stripe_id_not: String
+
+  """All values that are contained in given list."""
+  stripe_id_in: [String!]
+
+  """All values that are not contained in given list."""
+  stripe_id_not_in: [String!]
+
+  """All values less than the given value."""
+  stripe_id_lt: String
+
+  """All values less than or equal the given value."""
+  stripe_id_lte: String
+
+  """All values greater than the given value."""
+  stripe_id_gt: String
+
+  """All values greater than or equal the given value."""
+  stripe_id_gte: String
+
+  """All values containing the given string."""
+  stripe_id_contains: String
+
+  """All values not containing the given string."""
+  stripe_id_not_contains: String
+
+  """All values starting with the given string."""
+  stripe_id_starts_with: String
+
+  """All values not starting with the given string."""
+  stripe_id_not_starts_with: String
+
+  """All values ending with the given string."""
+  stripe_id_ends_with: String
+
+  """All values not ending with the given string."""
+  stripe_id_not_ends_with: String
+  has_open_disputes: Boolean
+
+  """All values that are not equal to given value."""
+  has_open_disputes_not: Boolean
+  user: UserWhereInput
+}
+
+input BuyerWhereUniqueInput {
+  id: ID
+  stripe_id: String
 }
 
 type Commission implements Node {
@@ -309,235 +538,6 @@ input CommissionWhereInput {
 
 input CommissionWhereUniqueInput {
   id: ID
-}
-
-type Customer implements Node {
-  id: ID!
-  stripe_id: String!
-  has_open_disputes: Boolean!
-  user: User!
-}
-
-"""A connection to a list of items."""
-type CustomerConnection {
-  """Information to aid in pagination."""
-  pageInfo: PageInfo!
-
-  """A list of edges."""
-  edges: [CustomerEdge]!
-  aggregate: AggregateCustomer!
-}
-
-input CustomerCreateInput {
-  stripe_id: String!
-  has_open_disputes: Boolean
-  user: UserCreateOneWithoutCustomerInput!
-}
-
-input CustomerCreateOneWithoutUserInput {
-  create: CustomerCreateWithoutUserInput
-  connect: CustomerWhereUniqueInput
-}
-
-input CustomerCreateWithoutUserInput {
-  stripe_id: String!
-  has_open_disputes: Boolean
-}
-
-"""An edge in a connection."""
-type CustomerEdge {
-  """The item at the end of the edge."""
-  node: Customer!
-
-  """A cursor for use in pagination."""
-  cursor: String!
-}
-
-enum CustomerOrderByInput {
-  id_ASC
-  id_DESC
-  stripe_id_ASC
-  stripe_id_DESC
-  has_open_disputes_ASC
-  has_open_disputes_DESC
-  updatedAt_ASC
-  updatedAt_DESC
-  createdAt_ASC
-  createdAt_DESC
-}
-
-type CustomerPreviousValues {
-  id: ID!
-  stripe_id: String!
-  has_open_disputes: Boolean!
-}
-
-type CustomerSubscriptionPayload {
-  mutation: MutationType!
-  node: Customer
-  updatedFields: [String!]
-  previousValues: CustomerPreviousValues
-}
-
-input CustomerSubscriptionWhereInput {
-  """Logical AND on all given filters."""
-  AND: [CustomerSubscriptionWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [CustomerSubscriptionWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [CustomerSubscriptionWhereInput!]
-
-  """
-  The subscription event gets dispatched when it's listed in mutation_in
-  """
-  mutation_in: [MutationType!]
-
-  """
-  The subscription event gets only dispatched when one of the updated fields names is included in this list
-  """
-  updatedFields_contains: String
-
-  """
-  The subscription event gets only dispatched when all of the field names included in this list have been updated
-  """
-  updatedFields_contains_every: [String!]
-
-  """
-  The subscription event gets only dispatched when some of the field names included in this list have been updated
-  """
-  updatedFields_contains_some: [String!]
-  node: CustomerWhereInput
-}
-
-input CustomerUpdateInput {
-  stripe_id: String
-  has_open_disputes: Boolean
-  user: UserUpdateOneRequiredWithoutCustomerInput
-}
-
-input CustomerUpdateManyMutationInput {
-  stripe_id: String
-  has_open_disputes: Boolean
-}
-
-input CustomerUpdateOneRequiredWithoutUserInput {
-  create: CustomerCreateWithoutUserInput
-  connect: CustomerWhereUniqueInput
-  update: CustomerUpdateWithoutUserDataInput
-  upsert: CustomerUpsertWithoutUserInput
-}
-
-input CustomerUpdateWithoutUserDataInput {
-  stripe_id: String
-  has_open_disputes: Boolean
-}
-
-input CustomerUpsertWithoutUserInput {
-  update: CustomerUpdateWithoutUserDataInput!
-  create: CustomerCreateWithoutUserInput!
-}
-
-input CustomerWhereInput {
-  """Logical AND on all given filters."""
-  AND: [CustomerWhereInput!]
-
-  """Logical OR on all given filters."""
-  OR: [CustomerWhereInput!]
-
-  """Logical NOT on all given filters combined by AND."""
-  NOT: [CustomerWhereInput!]
-  id: ID
-
-  """All values that are not equal to given value."""
-  id_not: ID
-
-  """All values that are contained in given list."""
-  id_in: [ID!]
-
-  """All values that are not contained in given list."""
-  id_not_in: [ID!]
-
-  """All values less than the given value."""
-  id_lt: ID
-
-  """All values less than or equal the given value."""
-  id_lte: ID
-
-  """All values greater than the given value."""
-  id_gt: ID
-
-  """All values greater than or equal the given value."""
-  id_gte: ID
-
-  """All values containing the given string."""
-  id_contains: ID
-
-  """All values not containing the given string."""
-  id_not_contains: ID
-
-  """All values starting with the given string."""
-  id_starts_with: ID
-
-  """All values not starting with the given string."""
-  id_not_starts_with: ID
-
-  """All values ending with the given string."""
-  id_ends_with: ID
-
-  """All values not ending with the given string."""
-  id_not_ends_with: ID
-  stripe_id: String
-
-  """All values that are not equal to given value."""
-  stripe_id_not: String
-
-  """All values that are contained in given list."""
-  stripe_id_in: [String!]
-
-  """All values that are not contained in given list."""
-  stripe_id_not_in: [String!]
-
-  """All values less than the given value."""
-  stripe_id_lt: String
-
-  """All values less than or equal the given value."""
-  stripe_id_lte: String
-
-  """All values greater than the given value."""
-  stripe_id_gt: String
-
-  """All values greater than or equal the given value."""
-  stripe_id_gte: String
-
-  """All values containing the given string."""
-  stripe_id_contains: String
-
-  """All values not containing the given string."""
-  stripe_id_not_contains: String
-
-  """All values starting with the given string."""
-  stripe_id_starts_with: String
-
-  """All values not starting with the given string."""
-  stripe_id_not_starts_with: String
-
-  """All values ending with the given string."""
-  stripe_id_ends_with: String
-
-  """All values not ending with the given string."""
-  stripe_id_not_ends_with: String
-  has_open_disputes: Boolean
-
-  """All values that are not equal to given value."""
-  has_open_disputes_not: Boolean
-  user: UserWhereInput
-}
-
-input CustomerWhereUniqueInput {
-  id: ID
-  stripe_id: String
 }
 
 type Item implements Node {
@@ -973,42 +973,42 @@ Long can represent values between -(2^63) and 2^63 - 1.
 scalar Long
 
 type Mutation {
-  createCustomer(data: CustomerCreateInput!): Customer!
+  createBuyer(data: BuyerCreateInput!): Buyer!
   createSeller(data: SellerCreateInput!): Seller!
   createItem(data: ItemCreateInput!): Item!
   createTransaction(data: TransactionCreateInput!): Transaction!
   createTransfer(data: TransferCreateInput!): Transfer!
   createCommission(data: CommissionCreateInput!): Commission!
   createUser(data: UserCreateInput!): User!
-  updateCustomer(data: CustomerUpdateInput!, where: CustomerWhereUniqueInput!): Customer
+  updateBuyer(data: BuyerUpdateInput!, where: BuyerWhereUniqueInput!): Buyer
   updateSeller(data: SellerUpdateInput!, where: SellerWhereUniqueInput!): Seller
   updateItem(data: ItemUpdateInput!, where: ItemWhereUniqueInput!): Item
   updateTransaction(data: TransactionUpdateInput!, where: TransactionWhereUniqueInput!): Transaction
   updateTransfer(data: TransferUpdateInput!, where: TransferWhereUniqueInput!): Transfer
   updateCommission(data: CommissionUpdateInput!, where: CommissionWhereUniqueInput!): Commission
   updateUser(data: UserUpdateInput!, where: UserWhereUniqueInput!): User
-  deleteCustomer(where: CustomerWhereUniqueInput!): Customer
+  deleteBuyer(where: BuyerWhereUniqueInput!): Buyer
   deleteSeller(where: SellerWhereUniqueInput!): Seller
   deleteItem(where: ItemWhereUniqueInput!): Item
   deleteTransaction(where: TransactionWhereUniqueInput!): Transaction
   deleteTransfer(where: TransferWhereUniqueInput!): Transfer
   deleteCommission(where: CommissionWhereUniqueInput!): Commission
   deleteUser(where: UserWhereUniqueInput!): User
-  upsertCustomer(where: CustomerWhereUniqueInput!, create: CustomerCreateInput!, update: CustomerUpdateInput!): Customer!
+  upsertBuyer(where: BuyerWhereUniqueInput!, create: BuyerCreateInput!, update: BuyerUpdateInput!): Buyer!
   upsertSeller(where: SellerWhereUniqueInput!, create: SellerCreateInput!, update: SellerUpdateInput!): Seller!
   upsertItem(where: ItemWhereUniqueInput!, create: ItemCreateInput!, update: ItemUpdateInput!): Item!
   upsertTransaction(where: TransactionWhereUniqueInput!, create: TransactionCreateInput!, update: TransactionUpdateInput!): Transaction!
   upsertTransfer(where: TransferWhereUniqueInput!, create: TransferCreateInput!, update: TransferUpdateInput!): Transfer!
   upsertCommission(where: CommissionWhereUniqueInput!, create: CommissionCreateInput!, update: CommissionUpdateInput!): Commission!
   upsertUser(where: UserWhereUniqueInput!, create: UserCreateInput!, update: UserUpdateInput!): User!
-  updateManyCustomers(data: CustomerUpdateManyMutationInput!, where: CustomerWhereInput): BatchPayload!
+  updateManyBuyers(data: BuyerUpdateManyMutationInput!, where: BuyerWhereInput): BatchPayload!
   updateManySellers(data: SellerUpdateManyMutationInput!, where: SellerWhereInput): BatchPayload!
   updateManyItems(data: ItemUpdateManyMutationInput!, where: ItemWhereInput): BatchPayload!
   updateManyTransactions(data: TransactionUpdateManyMutationInput!, where: TransactionWhereInput): BatchPayload!
   updateManyTransfers(data: TransferUpdateManyMutationInput!, where: TransferWhereInput): BatchPayload!
   updateManyCommissions(data: CommissionUpdateManyMutationInput!, where: CommissionWhereInput): BatchPayload!
   updateManyUsers(data: UserUpdateManyMutationInput!, where: UserWhereInput): BatchPayload!
-  deleteManyCustomers(where: CustomerWhereInput): BatchPayload!
+  deleteManyBuyers(where: BuyerWhereInput): BatchPayload!
   deleteManySellers(where: SellerWhereInput): BatchPayload!
   deleteManyItems(where: ItemWhereInput): BatchPayload!
   deleteManyTransactions(where: TransactionWhereInput): BatchPayload!
@@ -1045,21 +1045,21 @@ type PageInfo {
 }
 
 type Query {
-  customers(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Customer]!
+  buyers(where: BuyerWhereInput, orderBy: BuyerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Buyer]!
   sellers(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Seller]!
   items(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Item]!
   transactions(where: TransactionWhereInput, orderBy: TransactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Transaction]!
   transfers(where: TransferWhereInput, orderBy: TransferOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Transfer]!
   commissions(where: CommissionWhereInput, orderBy: CommissionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Commission]!
   users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
-  customer(where: CustomerWhereUniqueInput!): Customer
+  buyer(where: BuyerWhereUniqueInput!): Buyer
   seller(where: SellerWhereUniqueInput!): Seller
   item(where: ItemWhereUniqueInput!): Item
   transaction(where: TransactionWhereUniqueInput!): Transaction
   transfer(where: TransferWhereUniqueInput!): Transfer
   commission(where: CommissionWhereUniqueInput!): Commission
   user(where: UserWhereUniqueInput!): User
-  customersConnection(where: CustomerWhereInput, orderBy: CustomerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CustomerConnection!
+  buyersConnection(where: BuyerWhereInput, orderBy: BuyerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): BuyerConnection!
   sellersConnection(where: SellerWhereInput, orderBy: SellerOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): SellerConnection!
   itemsConnection(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ItemConnection!
   transactionsConnection(where: TransactionWhereInput, orderBy: TransactionOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): TransactionConnection!
@@ -1522,7 +1522,7 @@ input SellerWhereUniqueInput {
 }
 
 type Subscription {
-  customer(where: CustomerSubscriptionWhereInput): CustomerSubscriptionPayload
+  buyer(where: BuyerSubscriptionWhereInput): BuyerSubscriptionPayload
   seller(where: SellerSubscriptionWhereInput): SellerSubscriptionPayload
   item(where: ItemSubscriptionWhereInput): ItemSubscriptionPayload
   transaction(where: TransactionSubscriptionWhereInput): TransactionSubscriptionPayload
@@ -2607,7 +2607,7 @@ type User implements Node {
   id: ID!
   name: String!
   email: String!
-  customer: Customer!
+  buyer: Buyer!
   seller: Seller
   items(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Item!]
 }
@@ -2625,7 +2625,7 @@ type UserConnection {
 input UserCreateInput {
   name: String!
   email: String!
-  customer: CustomerCreateOneWithoutUserInput!
+  buyer: BuyerCreateOneWithoutUserInput!
   seller: SellerCreateOneWithoutUserInput
   items: ItemCreateManyWithoutSellerInput
 }
@@ -2640,8 +2640,8 @@ input UserCreateOneInput {
   connect: UserWhereUniqueInput
 }
 
-input UserCreateOneWithoutCustomerInput {
-  create: UserCreateWithoutCustomerInput
+input UserCreateOneWithoutBuyerInput {
+  create: UserCreateWithoutBuyerInput
   connect: UserWhereUniqueInput
 }
 
@@ -2655,7 +2655,7 @@ input UserCreateOneWithoutSellerInput {
   connect: UserWhereUniqueInput
 }
 
-input UserCreateWithoutCustomerInput {
+input UserCreateWithoutBuyerInput {
   name: String!
   email: String!
   seller: SellerCreateOneWithoutUserInput
@@ -2665,14 +2665,14 @@ input UserCreateWithoutCustomerInput {
 input UserCreateWithoutItemsInput {
   name: String!
   email: String!
-  customer: CustomerCreateOneWithoutUserInput!
+  buyer: BuyerCreateOneWithoutUserInput!
   seller: SellerCreateOneWithoutUserInput
 }
 
 input UserCreateWithoutSellerInput {
   name: String!
   email: String!
-  customer: CustomerCreateOneWithoutUserInput!
+  buyer: BuyerCreateOneWithoutUserInput!
   items: ItemCreateManyWithoutSellerInput
 }
 
@@ -2877,7 +2877,7 @@ input UserSubscriptionWhereInput {
 input UserUpdateDataInput {
   name: String
   email: String
-  customer: CustomerUpdateOneRequiredWithoutUserInput
+  buyer: BuyerUpdateOneRequiredWithoutUserInput
   seller: SellerUpdateOneWithoutUserInput
   items: ItemUpdateManyWithoutSellerInput
 }
@@ -2885,7 +2885,7 @@ input UserUpdateDataInput {
 input UserUpdateInput {
   name: String
   email: String
-  customer: CustomerUpdateOneRequiredWithoutUserInput
+  buyer: BuyerUpdateOneRequiredWithoutUserInput
   seller: SellerUpdateOneWithoutUserInput
   items: ItemUpdateManyWithoutSellerInput
 }
@@ -2924,11 +2924,11 @@ input UserUpdateOneRequiredInput {
   upsert: UserUpsertNestedInput
 }
 
-input UserUpdateOneRequiredWithoutCustomerInput {
-  create: UserCreateWithoutCustomerInput
+input UserUpdateOneRequiredWithoutBuyerInput {
+  create: UserCreateWithoutBuyerInput
   connect: UserWhereUniqueInput
-  update: UserUpdateWithoutCustomerDataInput
-  upsert: UserUpsertWithoutCustomerInput
+  update: UserUpdateWithoutBuyerDataInput
+  upsert: UserUpsertWithoutBuyerInput
 }
 
 input UserUpdateOneRequiredWithoutItemsInput {
@@ -2945,7 +2945,7 @@ input UserUpdateOneRequiredWithoutSellerInput {
   upsert: UserUpsertWithoutSellerInput
 }
 
-input UserUpdateWithoutCustomerDataInput {
+input UserUpdateWithoutBuyerDataInput {
   name: String
   email: String
   seller: SellerUpdateOneWithoutUserInput
@@ -2955,14 +2955,14 @@ input UserUpdateWithoutCustomerDataInput {
 input UserUpdateWithoutItemsDataInput {
   name: String
   email: String
-  customer: CustomerUpdateOneRequiredWithoutUserInput
+  buyer: BuyerUpdateOneRequiredWithoutUserInput
   seller: SellerUpdateOneWithoutUserInput
 }
 
 input UserUpdateWithoutSellerDataInput {
   name: String
   email: String
-  customer: CustomerUpdateOneRequiredWithoutUserInput
+  buyer: BuyerUpdateOneRequiredWithoutUserInput
   items: ItemUpdateManyWithoutSellerInput
 }
 
@@ -2976,9 +2976,9 @@ input UserUpsertNestedInput {
   create: UserCreateInput!
 }
 
-input UserUpsertWithoutCustomerInput {
-  update: UserUpdateWithoutCustomerDataInput!
-  create: UserCreateWithoutCustomerInput!
+input UserUpsertWithoutBuyerInput {
+  update: UserUpdateWithoutBuyerDataInput!
+  create: UserCreateWithoutBuyerInput!
 }
 
 input UserUpsertWithoutItemsInput {
@@ -3126,7 +3126,7 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   email_not_ends_with: String
-  customer: CustomerWhereInput
+  buyer: BuyerWhereInput
   seller: SellerWhereInput
   items_every: ItemWhereInput
   items_some: ItemWhereInput

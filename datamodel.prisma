@@ -1,18 +1,18 @@
-## Users, Customers, Accounts.
+## Users, Buyers, Sellers.
 type User {
   id: ID! @unique
   name: String!
   email: String! @unique
-  customer: Customer! @relation(name: "Customer", onDelete: CASCADE)
+  buyer: Buyer! @relation(name: "Buyer", onDelete: CASCADE)
   seller: Seller @relation(name: "Seller", onDelete: CASCADE)
   items: [Item] @relation(name: "ItemsByUser", onDelete: CASCADE)
 }
 
-type Customer {
+type Buyer {
   id: ID! @unique
   stripe_id: String! @unique
   has_open_disputes: Boolean! @default(value: false)
-  user: User! @relation(name: "Customer")
+  user: User! @relation(name: "Buyer")
 }
 
 enum SellerVerificationStatus {

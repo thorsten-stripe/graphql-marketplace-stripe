@@ -17,7 +17,7 @@ const Mutations = {
         data: {
           name,
           email,
-          customer: {
+          buyer: {
             create: {
               stripe_id: customer.id
             }
@@ -73,7 +73,7 @@ const Mutations = {
   },
   createItem: forwardTo("db"),
   async createTransaction(parent, args, ctx, info) {
-    const { buyer, items } = args;
+    const { buyer: buyer_id, items } = args;
     // Retrieve Items and validate that they have the same currency.
     const item_ids = items.map(item => ({ id: item }));
     const item_objects = await ctx.db.query.items(
@@ -114,10 +114,10 @@ const Mutations = {
       0
     );
     let commission_amount;
-    // Retrieve buyer customer details.
-    const { email, customer } = await ctx.db.query.user(
-      { where: { id: buyer } },
-      `{ email customer{stripe_id} }`
+    // Retrieve buyer details.
+    const { email, buyer } = await ctx.db.query.user(
+      { where: { id: buyer_id } },
+      `{ email buyer{stripe_id} }`
     );
 
     if (one_to_one) {
@@ -129,14 +129,14 @@ const Mutations = {
       const charge = await stripe.charges.create({
         amount: transaction_amount,
         currency: currency,
-        customer: customer.stripe_id,
+        customer: buyer.stripe_id,
         description: `Charge for ${email}`,
         destination: {
           account: seller.stripe_id,
           amount: transaction_amount - commission_amount
         },
         metadata: {
-          buyer_user_id: buyer,
+          buyer_user_id: buyer_id,
           seller_user_id: item_objects[0].seller.id,
           commission_amount,
           commission_percentage: seller.commission_percentage
@@ -151,7 +151,7 @@ const Mutations = {
             items: {
               connect: item_ids
             },
-            buyer: { connect: { id: buyer } },
+            buyer: { connect: { id: buyer_id } },
             sellers: {
               connect: [{ id: item_objects[0].seller.id }]
             },
@@ -199,16 +199,16 @@ const Mutations = {
         0
       );
       // We need a transfer group to link the charges and transfers together
-      const transfer_group = `${Date.now()}-${buyer}`;
+      const transfer_group = `${Date.now()}-${buyer_id}`;
       // Create the charge first. Once successful, create the transfers.
       const charge = await stripe.charges.create({
         amount: transaction_amount,
         currency: currency,
-        customer: customer.stripe_id,
+        customer: buyer.stripe_id,
         description: `Charge for ${email}`,
         transfer_group,
         metadata: {
-          buyer_user_id: buyer,
+          buyer_user_id: buyer_id,
           seller_user_ids: JSON.stringify(
             item_objects.map(item => item.seller.id)
           ),
@@ -247,7 +247,7 @@ const Mutations = {
             items: {
               connect: item_ids
             },
-            buyer: { connect: { id: buyer } },
+            buyer: { connect: { id: buyer_id } },
             sellers: {
               connect: item_objects.map(item => ({ id: item.seller.id }))
             },
