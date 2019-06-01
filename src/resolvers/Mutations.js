@@ -1,5 +1,6 @@
 const { forwardTo } = require("prisma-binding");
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+stripe.setApiVersion(process.env.API_VERSION);
 
 const Mutations = {
   async signup(parent, args, ctx, info) {
